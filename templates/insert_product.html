@@ -1,0 +1,47 @@
+{% import 'forms.html' as forms %}
+{% extends "layout.html" %}
+{% block title %}{{title}}{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block page %}{{title}}{% endblock %}
+{% block heading %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+<form action="{{url_for('user')}}" method=post>
+<dl>
+  <dt>Product</dt>
+  <dd>{{ forms.input('username') }}</dd>
+  <dt>Product Type</dt>
+  <dd>{{ forms.select('productType', productTypes) }}</dd>
+
+</dl>
+  <input type="submit" text="go">
+</form>
+
+<div>
+  <table>
+    <caption>table title and/or explanatory text</caption>
+    <thead>
+      <tr>
+        <th>Product Type</th>
+        <th>Product Name</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+      <tr>
+        <td>{{product.type}}</td>
+        <td>{{product.name}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+  {% block footer %}
+  {{super()}}
+  {% endblock %}
+{% endblock %}
