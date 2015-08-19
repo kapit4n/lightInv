@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for,redirect
 import datetime
 from flask import request
 from utils.queries import DBManager
@@ -26,30 +26,29 @@ def home():
     return render_template('template.html', my_string="Foo",
         my_list = [6, 7, 8, 9, 10, 11], title="Home", current_time=datetime.datetime.now())
 
-
-@app.route("/about")
-def about():
+@app.route('/product', methods=['POST', 'GET'])
+def product():
     db = DBManager()
-    products = []
-    for(id, name) in db.executeQuery("Select id, name from Fanta"):
-        products.append(Fanta(name, id))
-
-    for(id, name) in db.executeQuery("Select id, name from Coke"):
-        products.append(Coke(name, id))
-
-    return render_template('insert_product.html', my_string="Bar",
-        my_list=[12, 13, 14, 15, 16, 17], title="About", current_time=datetime.datetime.now(), 
-        products=products, productTypes=['Fanta', 'Coke'])
-
-
-@app.route('/user', methods=['POST', 'GET'])
-def user():
     if request.method == 'POST':
         print(request.form)
-        return "Hello this is the POST of the method " + str(request)
+        product = None
+        if request.form['productType'] == "Fanta":
+            product = Fanta(request.form['name'])
+        else:
+            product = Coke(request.form['name'])
+        product.save(DBManager())
+        return redirect("/product")
     else:
-        print(request.form)
-        return "Hello this is the GET of the method " + str(request)
+        products = []
+        for(id, name) in db.executeQuery("Select id, name from Fanta"):
+            products.append(Fanta(name, id))
+
+        for(id, name) in db.executeQuery("Select id, name from Coke"):
+            products.append(Coke(name, id))
+
+        return render_template('products.html', my_string="Bar",
+            title="Products", current_time=datetime.datetime.now(), 
+            products=products, productTypes=['Fanta', 'Coke'])
 
 
 @app.route("/contact")
