@@ -5,7 +5,7 @@ import datetime
 
 class PackageDelivery(IQueryable):
 
-    def __init__(self, products, destiny=None, driver=None, id=0):
+    def __init__(self, products, destiny=0, driver=0, id=0):
         self.created_at = datetime.datetime.now()
         self.packageItems = []
         for product in products:
@@ -16,7 +16,7 @@ class PackageDelivery(IQueryable):
         self.id = id
 
     def fields(self):
-        return "created_at"
+        return "created_at,destiny, driver_id"
 
     def values(self):
         return "'{0}'".format(self.created_at)
@@ -25,11 +25,13 @@ class PackageDelivery(IQueryable):
         return "package"
 
     def updateValues(self):
-        return "name= '{0}'".format(self.name + ' Updated')
+        return "driver_id= '{0}'".format(self.driver)
 
     def setValues(self, cursor):
-        for (name) in cursor:
-                self.name = name
+        for (created_at, destiny, driver_id) in cursor:
+            self.created_at = created_at
+            self.destiny = destiny
+            self.driver = driver_id
 
     def saveChilds(self, db):
         for item in self.packageItems:

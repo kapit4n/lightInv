@@ -11,8 +11,8 @@
 {% block content %}
 
 <div>
-  <form action="{{url_for('updatePackage')}}" method="put">
-
+  <form action="{{url_for('updatePackage')}}" method="post">
+  <input type="hidden" name="packageId" value="{{package.id}}">
     <table>
       <caption>Items of the package</caption>
       <thead>
@@ -30,7 +30,7 @@
       {% endfor %}
       </tbody>
     </table>
-    {{ forms.selectName('driver', '' , drivers) }}
+    {{ forms.selectName('driver', package.driver|string , drivers) }}
     <input type="submit" value="save">
   </form>
 </div>

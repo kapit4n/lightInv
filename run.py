@@ -94,31 +94,15 @@ def createPackage():
             products.append(Fanta(name, id))
 
     package = PackageDelivery(products)
-    package.save(db)
+    package.save(db, True)
     return redirect("/manage-package/" + str(package.id))
 
 
-@app.route('/update-package', methods=['PUT'])
+@app.route('/update-package', methods=['POST'])
 def updatePackage():
     db = DBManager()
-    fantas = []
-    cokes = []
-    for product in request.values.getlist('productId'):
-        print("FFFFFFFFFFFFFFFFFFF " + product)
-        if product.split('-')[1] == 'Fanta':
-            fantas.append(product.split('-')[0])
-        else:
-            cokes.append(product.split('-')[0])
-    products = []
-
-    query = "Select id, name from Fanta where id in (" + ",".join(fantas) + ")"
-
-    for(id, name) in db.executeQuery(query):
-            products.append(Fanta(name, id))
-    query = "Select id, name from Fanta where id in (" + ",".join(cokes) + ")"
-    for(id, name) in db.executeQuery(query):
-            products.append(Coke(name, id))
-    package = PackageDelivery(products)
+    package = PackageDelivery([], 0, request.form['driverId'])
+    package.id = request.form['packageId']
     package.save(db)
     return redirect("/manage-package/" + str(package.id))
 
@@ -135,9 +119,9 @@ def managePackage(packageId):
     return render_template('package.html', title="Package Administrator", package=packageAux, drivers=driverList)
 
 
-@app.route('/save-package', methods=['PUT'])
+@app.route('/save-package', methods=['POST'])
 def savePackage():
-    return "Package saved"
+    pass
 
 
 @app.route('/driver', methods=['POST', 'GET'])
