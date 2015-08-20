@@ -14,3 +14,16 @@
     {%- endfor %}
     </select>
 {%- endmacro %}
+
+{%- macro selectName(name, value, options) -%}
+    <select name="{{ name }}">
+    {%- for option in options %}
+        <option value="{{option.id}}"> {{option.name}} </option>
+    {%- endfor %}
+    </select>
+{%- endmacro %}
+
+{%- macro checkbox(name, value) -%}
+    <input type="checkbox" name="{{name}}" value="{{value}}" >
+{%- endmacro %}
+

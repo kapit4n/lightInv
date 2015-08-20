@@ -10,31 +10,29 @@
 {% endblock %}
 {% block content %}
 
-<form action="{{url_for('user')}}" method=post>
+<form action="{{url_for('driver')}}" method=post>
 <dl>
-  <dt>Product</dt>
-  <dd>{{ forms.input('username') }}</dd>
-  <dt>Product Type</dt>
-  <dd>{{ forms.select('productType', productTypes) }}</dd>
-
+  <dt>Name</dt>
+  <dd>{{ forms.input('name') }}</dd>
+  <dt></dt>
 </dl>
   <input type="submit" text="go">
 </form>
 
 <div>
   <table>
-    <caption>table title and/or explanatory text</caption>
+    <caption>Driver List</caption>
     <thead>
       <tr>
-        <th>Product Type</th>
-        <th>Product Name</th>
+        <th>Driver Id</th>
+        <th>Driver Name</th>
       </tr>
     </thead>
     <tbody>
-    {% for product in products %}
+    {% for driver in drivers %}
       <tr>
-        <td>{{product.type}}</td>
-        <td>{{product.name}}</td>
+        <td>{{driver.id}}</td>
+        <td>{{driver.name}}</td>
       </tr>
     {% endfor %}
     </tbody>

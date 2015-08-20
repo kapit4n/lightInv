@@ -32,6 +32,12 @@ class Coke(AbstractProduct, IQueryable):
         for (name) in cursor:
                 self.name = name
 
+    def saveChilds(self, db):
+        pass
+
+    def pullChildren(self, db):
+        pass
+
 
 class Fanta(AbstractProduct, IQueryable):
     def __init__(self, name, id=0):
@@ -54,3 +60,9 @@ class Fanta(AbstractProduct, IQueryable):
     def setValues(self, cursor):
         for (name) in cursor:
                 self.name = name
+
+    def saveChilds(self, db):
+        pass
+
+    def pullChildren(self, db):
+        pass

@@ -4,7 +4,7 @@ from model.delivery import *
 from queue import *
 
 
-class Employee(object):
+class Employee(IQueryable):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, name):
@@ -14,17 +14,70 @@ class Employee(object):
     def create(self, name):
         pass
 
+    def fields(self):
+        return 'driver'
+
+    def values(self):
+        return "'{0}'".format(self.name)
+
+    def tableName(self):
+        return "storekeeper"
+
+    def updateValues(self):
+        return "name= '{0}'".format(self.name + ' Updated')
+
+    def setValues(self, cursor):
+        for (name) in cursor:
+                self.name = name
+
+    def saveChilds(self, db):
+        pass
+
+    def pullChildren(self, db):
+        pass
+
 
 class Driver(Employee):
-    def __init__(self, name):
+    def __init__(self, name, id=0):
         Employee.__init__(self, name)
+        self.id = id
 
     def drive(self):
         pass
 
+    def fields(self):
+        return 'name'
+
+    def values(self):
+        return "'{0}'".format(self.name)
+
+    def tableName(self):
+        return "driver"
+
+    def updateValues(self):
+        return "name= '{0}'".format(self.name + ' Updated')
+
+    def setValues(self, cursor):
+        for (hello) in cursor:
+                self.name = hello
+
+    def saveChilds(self, db):
+        pass
+
+    def pullChildren(self, db):
+        pass
+
+    @staticmethod
+    def getList(db):
+        query = "select id, name from driver"
+        drivers = []
+        for (id, name) in db.executeQuery(query):
+            drivers.append(Driver(name, id))
+        return drivers
+
 
 class Storekeeper(Employee):
-    def __init__(self, name):
+    def __init__(self, name, id=0):
         Employee.__init__(self, name)
         self.packages = Queue()
 
@@ -49,3 +102,25 @@ class Storekeeper(Employee):
             return item
         else:
             return None
+
+    def fields(self):
+        return 'name'
+
+    def values(self):
+        return "'{0}'".format(self.name)
+
+    def tableName(self):
+        return "storekeeper"
+
+    def updateValues(self):
+        return "name= '{0}'".format(self.name + ' Updated')
+
+    def setValues(self, cursor):
+        for (name) in cursor:
+                self.name = name
+
+    def saveChilds(self, db):
+        pass
+
+    def pullChildren(self, db):
+        pass

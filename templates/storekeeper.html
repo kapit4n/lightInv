@@ -10,34 +10,38 @@
 {% endblock %}
 {% block content %}
 
-<form action="{{url_for('product')}}" method=post>
+<form action="{{url_for('product')}}" method="post">
 <dl>
   <dt>Product</dt>
   <dd>{{ forms.input('name') }}</dd>
   <dt>Product Type</dt>
   <dd>{{ forms.select('productType', 'Fanta' , productTypes) }}</dd>
 </dl>
-  <input type="submit" text="go">
+  <input type="submit" value="save">
 </form>
 
 <div>
-  <table>
-    <caption>table title and/or explanatory text</caption>
-    <thead>
-      <tr>
-        <th>Product Type</th>
-        <th>Product Name</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for product in products %}
-      <tr>
-        <td>{{product.type}}</td>
-        <td>{{product.name}}</td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+  <form action="{{url_for('createPackage')}}" method="post">
+    <table>
+      <caption>table title and/or explanatory text</caption>
+      <thead>
+        <tr>
+          <th>Product Type</th>
+          <th>Product Name</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for product in products %}
+        <tr>
+          <td>{{product.type}}</td>
+          <td>{{product.name}}</td>
+          <td>{{forms.checkbox('productId', (product.id|string) + '-' + product.type)}}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <input type="submit" value="create package">
+  </form>
 </div>
 
   {% block footer %}
