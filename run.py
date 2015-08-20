@@ -89,7 +89,7 @@ def createPackage():
             cokes.append(product.split('-')[0])
     products = []
     query = "Select id, name from Fanta where id in (" + ",".join(fantas) + ")"
-    print(query)
+
     for(id, name) in db.executeQuery(query):
             products.append(Fanta(name, id))
 
@@ -101,7 +101,7 @@ def createPackage():
 @app.route('/update-package', methods=['POST'])
 def updatePackage():
     db = DBManager()
-    package = PackageDelivery([], 0, request.form['driverId'])
+    package = PackageDelivery([], request.form['addressId'], request.form['driverId'])
     package.id = request.form['packageId']
     package.save(db)
     return redirect("/manage-package/" + str(package.id))
@@ -116,7 +116,17 @@ def managePackage(packageId):
     packageAux.id = packageId
     packageAux.pull(db)
     driverList = Driver.getList(db)
-    return render_template('package.html', title="Package Administrator", package=packageAux, drivers=driverList)
+    addressListAux = Address.getList(db)
+    return render_template('manage-package.html', title="Package Administrator", 
+        package=packageAux, drivers=driverList, addressList=addressListAux)
+
+
+@app.route('/package', methods=['GET'])
+def package():
+    db = DBManager()
+    packageList = PackageDelivery.getList(db)
+    return render_template('package.html', title="Package Administrator", 
+        packages=packageList)
 
 
 @app.route('/save-package', methods=['POST'])
@@ -129,11 +139,23 @@ def driver():
     db = DBManager()
     if request.method == 'POST':
         driver = Driver(request.form['name'])
-        driver.save(DBManager())
+        driver.save(db)
         return redirect("/driver")
     else:
         drivers = Driver.getList(db)
         return render_template('driver.html', title="Drivers", drivers=drivers)
+
+
+@app.route('/address', methods=['POST', 'GET'])
+def address():
+    db = DBManager()
+    if request.method == 'POST':
+        address = Address(request.form['city'], request.form['street'], request.form['number'])
+        address.save(db)
+        return redirect("/address")
+    else:
+        addressListAux = Address.getList(db)
+        return render_template('address.html', title="Address List", addressList=addressListAux)
 
 
 if __name__ == '__main__':

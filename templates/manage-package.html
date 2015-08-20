@@ -1,0 +1,42 @@
+{% import 'forms.html' as forms %}
+{% extends "layout.html" %}
+{% block title %}{{title}}{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block page %}{{title}}{% endblock %}
+{% block heading %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+<div>
+  <form action="{{url_for('updatePackage')}}" method="post">
+  <input type="hidden" name="packageId" value="{{package.id}}">
+    <table>
+      <caption>Items of the package</caption>
+      <thead>
+        <tr>
+          <th>Product Id</th>
+          <th>Product Name</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in package.packageItems %}
+        <tr>
+          <td>{{item.productId}}</td>
+          <td>{{item.productName}}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {{ forms.selectName('driverId', package.driver|string , drivers) }}
+    {{ forms.selectName('addressId', package.destiny|string , addressList) }}
+    <input type="submit" value="save">
+  </form>
+</div>
+
+  {% block footer %}
+  {{super()}}
+  {% endblock %}
+{% endblock %}

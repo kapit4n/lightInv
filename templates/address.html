@@ -1,0 +1,53 @@
+{% import 'forms.html' as forms %}
+{% extends "layout.html" %}
+{% block title %}{{title}}{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block page %}{{title}}{% endblock %}
+{% block heading %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+<form action="{{url_for('address')}}" method=post>
+<dl>
+  <dt>City</dt>
+  <dd>{{ forms.input('city') }}</dd>
+  <dt>Street</dt>
+  <dd>{{ forms.input('street') }}</dd>
+  <dt>Number</dt>
+  <dd>{{ forms.input('number') }}</dd>
+
+</dl>
+  <input type="submit" value="Save">
+</form>
+
+<div>
+  <table>
+    <caption>Address List</caption>
+    <thead>
+      <tr>
+        <th>Addres Id</th>
+        <th>City</th>
+        <th>Street</th>
+        <th>number</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for address in addressList %}
+      <tr>
+        <td>{{address.id}}</td>
+        <td>{{address.city}}</td>
+        <td>{{address.street}}</td>
+        <td>{{address.number}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+  {% block footer %}
+  {{super()}}
+  {% endblock %}
+{% endblock %}

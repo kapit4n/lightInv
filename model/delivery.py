@@ -14,18 +14,19 @@ class PackageDelivery(IQueryable):
         self.driver = driver
         self.destiny = destiny
         self.id = id
+        self.name = "Package ({0}, {1}, {2})".format(self.created_at, self.destiny, self.driver)
 
     def fields(self):
-        return "created_at,destiny, driver_id"
+        return "created_at, destiny, driver_id"
 
     def values(self):
-        return "'{0}'".format(self.created_at)
+        return "'{0}', {1}, {2}".format(self.created_at, self.destiny, self.driver)
 
     def tableName(self):
         return "package"
 
     def updateValues(self):
-        return "driver_id= '{0}'".format(self.driver)
+        return "driver_id= '{0}', destiny= '{1}'".format(self.driver, self.destiny)
 
     def setValues(self, cursor):
         for (created_at, destiny, driver_id) in cursor:
@@ -46,6 +47,14 @@ class PackageDelivery(IQueryable):
         self.packageItems = []
         for (id, package_id, product_id, product_name) in db.executeQuery(query):
             self.packageItems.append(PackageItem(package_id, product_id, product_name, id))
+
+    @staticmethod
+    def getList(db):
+        query = "select id, created_at, destiny, driver_id from package"
+        packageList = []
+        for (id, created_at, destiny, driver_id) in db.executeQuery(query):
+            packageList.append(PackageDelivery([], destiny, driver_id, id))
+        return packageList
 
 
 class PackageItem(IQueryable):
@@ -86,6 +95,7 @@ class Address(IQueryable):
         self.street = street
         self.number = number
         self.id = id
+        self.name = "{0} {1} {2}".format(self.city, self.street, self.number)
 
     def fields(self):
         return "city, street, number"
@@ -108,6 +118,14 @@ class Address(IQueryable):
 
     def pullChildren(self, db):
         pass
+
+    @staticmethod
+    def getList(db):
+        query = "select id, city, street, number from address"
+        addressList = []
+        for (id, city, street, number) in db.executeQuery(query):
+            addressList.append(Address(city, street, number, id))
+        return addressList
 
 
 class Car(IQueryable):

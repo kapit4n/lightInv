@@ -10,29 +10,26 @@
 {% endblock %}
 {% block content %}
 
+
 <div>
-  <form action="{{url_for('updatePackage')}}" method="post">
-  <input type="hidden" name="packageId" value="{{package.id}}">
-    <table>
-      <caption>Items of the package</caption>
-      <thead>
-        <tr>
-          <th>Product Id</th>
-          <th>Product Name</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for item in package.packageItems %}
-        <tr>
-          <td>{{item.productId}}</td>
-          <td>{{item.productName}}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-    {{ forms.selectName('driver', package.driver|string , drivers) }}
-    <input type="submit" value="save">
-  </form>
+  <table>
+    <caption>Package List</caption>
+    <thead>
+      <tr>
+        <th>Package Id</th>
+        <th>Package Name</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for package in packages %}
+      <tr>
+        <td>{{package.id}}</td>
+        <td>{{package.name}}</td>
+        <td><a href="manage-package/{{package.id}}" >{{package.id}}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 </div>
 
   {% block footer %}
