@@ -26,7 +26,7 @@ class Coke(AbstractProduct, IQueryable):
         return "Coke"
 
     def updateValues(self):
-        return "name= '{0}'".format(self.name + ' Updated')
+        return "name= '{0}'".format(self.name)
 
     def setValues(self, cursor):
         for (name) in cursor:
@@ -55,7 +55,7 @@ class Fanta(AbstractProduct, IQueryable):
         return "Fanta"
 
     def updateValues(self):
-        return "name= '{0}'".format(self.name + ' Updated')
+        return "name= '{0}'".format(self.name)
 
     def setValues(self, cursor):
         for (name) in cursor:

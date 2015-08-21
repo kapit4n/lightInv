@@ -83,20 +83,25 @@ def contact():
 def createPackage():
     db = DBManager()
     fantas = []
+    cokes = []
     packageId = 0
     if request.form['packageId'] is not None:
         packageId = request.form['packageId']
-    cokes = []
     for product in request.values.getlist('productId'):
         if product.split('-')[1] == 'Fanta':
             fantas.append(product.split('-')[0])
         else:
             cokes.append(product.split('-')[0])
     products = []
-    query = "Select id, name from Fanta where id in (" + ",".join(fantas) + ")"
+    if len(fantas) > 0:
+        query = "Select id, name from Fanta where id in (" + ",".join(fantas) + ")"
+        for(id, name) in db.executeQuery(query):
+                products.append(Fanta(name, id))
 
-    for(id, name) in db.executeQuery(query):
-            products.append(Fanta(name, id))
+    if len(cokes) > 0:
+        query = "Select id, name from Coke where id in (" + ",".join(cokes) + ")"
+        for(id, name) in db.executeQuery(query):
+                products.append(Coke(name, id))
 
     package = PackageDelivery(products)
     package.id = packageId
