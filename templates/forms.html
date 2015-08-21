@@ -2,6 +2,34 @@
     <input type="{{ type }}" value="{{ value|e }}" name="{{ name }}">
 {%- endmacro %}
 
+{% macro labelAndInput(label, name, value='', type='text') -%}
+    <div class="form-group">
+        <label for="{{name}}" class="control-label col-sm-3">{{label}}</label>
+        <div class="col-sm-9">
+            <input class="form-control" type="{{ type }}" value="{{ value }}" name="{{ name }}" id="{{name}}" >
+        </div>
+    </div>
+{%- endmacro %}
+
+
+{%- macro label_select(label,name, value, options) -%}
+  <div class="form-group">
+    <label class="control-label col-sm-3" >{{label}}</label>
+    <div class="col-sm-9">
+      <select class="form-control"  name="{{ name }}">
+        {%- for option in options %}
+          <option value="{{option}}"> {{option}} </option>
+        {%- endfor %}
+      </select>
+    </div>
+  </div>    
+{%- endmacro %}
+
+
+{% macro inputPassword(name, value='') -%}
+    <input type="password" value="{{ value|e }}" name="{{ name }}">
+{%- endmacro %}
+
 {%- macro textarea(name, value='', rows=10, cols=40) -%}
     <textarea name="{{ name }}" rows="{{ rows }}" cols="{{ cols
         }}">{{ value|e }}</textarea>

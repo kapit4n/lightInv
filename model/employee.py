@@ -126,32 +126,37 @@ class Storekeeper(Employee):
         pass
 
 
-class Customer(Employee):
-    def __init__(self, display_name, email, login, user_type, id=0):
-        Employee.__init__(self, name)
+class User(Employee):
+    def __init__(self, display_name, email, login, password, user_type, id=0):
+        Employee.__init__(self, display_name)
         self.display_name = display_name
         self.email = email
         self.login = login
+        self.password = password
         self.user_type = user_type
-
+        self.id = id
+        self.name = display_name
 
     def fields(self):
-        return 'display_name, email, login, user_type'
+        return 'display_name, email, login, password, user_type'
 
     def values(self):
-        return "'{0}', '{1}', '{2}', '{3}'".format(self.display_name, self.email, self.login, self.user_type)
+        return "'{0}', '{1}', '{2}', '{3}', '{4}'".format(self.display_name, self.email, 
+            self.login, self.password, self.user_type)
 
     def tableName(self):
         return "user"
 
     def updateValues(self):
-        return "display_name= '{0}', email= '{1}', login= '{2}', user_type= '{3}'".format(self.display_name, self.email, self.login, self.user_type)
+        return "display_name= '{0}', email= '{1}', login= '{2}', password= '{3}', user_type= '{4}'".format(self.display_name, 
+            self.email, self.login, self.password, self.user_type)
 
     def setValues(self, cursor):
-        for (display_name, email, login, user_type) in cursor:
+        for (display_name, email, login, password, user_type) in cursor:
             self.display_name = display_name
             self.email = email
             self.login = login
+            self.password = password
             self.user_type = user_type
 
     def saveChilds(self, db):
@@ -159,3 +164,11 @@ class Customer(Employee):
 
     def pullChildren(self, db):
         pass
+
+    @staticmethod
+    def getList(db):
+        query = "select id, display_name, email, login, password, user_type from user"
+        users = []
+        for (id, display_name, email, login, password, user_type) in db.executeQuery(query):
+            users.append(User(display_name, email, login, password, user_type, id))
+        return users

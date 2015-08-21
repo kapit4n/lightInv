@@ -1,0 +1,59 @@
+{% import 'forms.html' as forms %}
+{% extends "layout.html" %}
+{% block title %}{{title}}{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block page %}{{title}}{% endblock %}
+{% block heading %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+<form action="{{url_for('user')}}" method="post" class="form-horizontal"  role="form">
+  {{ forms.labelAndInput('Display Name', 'display_name') }}
+  {{ forms.labelAndInput('Email', 'email') }}
+  {{ forms.labelAndInput('Login', 'login') }}
+  {{ forms.labelAndInput('password', 'password', '', 'password') }}
+  {{ forms.label_select('Usert Type','user_type', 'customer', ['customer', 'driver', 'storekeeper']) }}
+
+  
+  <div class="form-group"> 
+    <div class="col-sm-offset-3 col-sm-9">
+      <button type="submit" class="btn btn-default">Save</button>
+    </div>
+  </div>
+</form>
+
+<div>
+  <table class="table table-striped">
+    <caption>User List</caption>
+    <thead>
+      <tr>
+        <th>Driver Id</th>
+        <th>Display name</th>
+        <th>Email</th>
+        <th>Login</th>
+        <th>Password</th>
+        <th>type</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+      <tr>
+        <td>{{user.id}}</td>
+        <td>{{user.name}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.login}}</td>
+        <td>{{user.password}}</td>
+        <td>{{user.user_type}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+  {% block footer %}
+  {{super()}}
+  {% endblock %}
+{% endblock %}

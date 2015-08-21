@@ -161,6 +161,20 @@ def driver():
         return render_template('driver.html', title="Drivers", drivers=drivers)
 
 
+@app.route('/user', methods=['POST', 'GET'])
+def user():
+    db = DBManager()
+    if request.method == 'POST':
+        user = User(request.form['display_name'], request.form['email'],
+            request.form['login'], request.form['password'],
+            request.form['user_type'])
+        user.save(db)
+        return redirect("/user")
+    else:
+        users = User.getList(db)
+        return render_template('user.html', title="Users", users=users)
+
+
 @app.route('/address', methods=['POST', 'GET'])
 def address():
     db = DBManager()
