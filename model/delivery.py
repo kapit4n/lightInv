@@ -33,10 +33,11 @@ class PackageDelivery(IQueryable):
         return "status= '{0}'".format(self.status)
 
     def setValues(self, cursor):
-        for (created_at, destiny, driver_id) in cursor:
+        for (created_at, destiny, driver_id, status) in cursor:
             self.created_at = created_at
             self.destiny = destiny
             self.driver = driver_id
+            self.status = status
 
     def saveChilds(self, db):
         for item in self.packageItems:
@@ -54,10 +55,10 @@ class PackageDelivery(IQueryable):
 
     @staticmethod
     def getList(db):
-        query = "select id, created_at, destiny, driver_id from package"
+        query = "select id, created_at, destiny, driver_id, status from package"
         packageList = []
-        for (id, created_at, destiny, driver_id) in db.executeQuery(query):
-            packageList.append(PackageDelivery([], destiny, driver_id, id))
+        for (id, created_at, destiny, driver_id, status) in db.executeQuery(query):
+            packageList.append(PackageDelivery([], destiny, driver_id, status, id))
         return packageList
 
 
