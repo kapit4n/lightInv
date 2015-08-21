@@ -27,50 +27,32 @@ def template_test():
 def product():
     db = DBManager()
     if request.method == 'POST':
-        if request.form['productType'] == "Fanta":
-            product = Fanta(request.form['name'])
-        else:
-            product = Coke(request.form['name'])
+        product = Product(request.form['name'], request.form['code1'], request.form['quantity'])
         product.save(DBManager())
         return redirect("/product")
     else:
-        products = []
-        for(id, name) in db.executeQuery("Select id, name from Fanta"):
-            products.append(Fanta(name, id))
-
-        for(id, name) in db.executeQuery("Select id, name from Coke"):
-            products.append(Coke(name, id))
-
+        products = Product.getList(db)
         return render_template('products.html', my_string="Bar",
             title="Products", current_time=datetime.datetime.now(),
-            products=products, productTypes=['Fanta', 'Coke'])
+            products=products)
 
 
-@app.route('/home', methods=['POST', 'GET'])
+@app.route('/quick', methods=['POST', 'GET'])
 def home():
     db = DBManager()
     if request.method == 'POST':
-        product = None
-        if request.form['productType'] == "Fanta":
-            product = Fanta(request.form['name'])
-        else:
-            product = Coke(request.form['name'])
+        product = Product(request.form['name'])
         product.save(DBManager())
         return redirect("/product")
     else:
         packageIdAux = 0
         if request.args.get('packageId') is not None:
             packageIdAux = request.args.get('packageId')
-        products = []
-        for(id, name) in db.executeQuery("Select id, name from Fanta"):
-            products.append(Fanta(name, id))
-
-        for(id, name) in db.executeQuery("Select id, name from Coke"):
-            products.append(Coke(name, id))
+        products = Product.getList(db)
 
         return render_template('storekeeper.html', my_string="Bar",
             title="Store Keeper", current_time=datetime.datetime.now(), 
-            products=products, productTypes=['Fanta', 'Coke'], packageId=packageIdAux)
+            products=products, packageId=packageIdAux)
 
 
 @app.route("/contact")
@@ -82,30 +64,22 @@ def contact():
 @app.route('/create-package', methods=['POST'])
 def createPackage():
     db = DBManager()
-    fantas = []
-    cokes = []
     packageId = 0
     if request.form['packageId'] is not None:
         packageId = request.form['packageId']
-    for product in request.values.getlist('productId'):
-        if product.split('-')[1] == 'Fanta':
-            fantas.append(product.split('-')[0])
-        else:
-            cokes.append(product.split('-')[0])
+    productIds = []
     products = []
-    if len(fantas) > 0:
-        query = "Select id, name from Fanta where id in (" + ",".join(fantas) + ")"
-        for(id, name) in db.executeQuery(query):
-                products.append(Fanta(name, id))
+    for productId in request.values.getlist('productId'):
+        productIds.append(productId)
 
-    if len(cokes) > 0:
-        query = "Select id, name from Coke where id in (" + ",".join(cokes) + ")"
-        for(id, name) in db.executeQuery(query):
-                products.append(Coke(name, id))
+    if len(productIds) > 0:
+        products = Product.getList(db, ",".join(productIds))
 
     package = PackageDelivery(products)
-    package.id = packageId
-    if int(package.id) > 0:
+    package.id = int(packageId)
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    print(packageId)
+    if package.id > 0:
         package.saveChilds(db)
     else:
         package.save(db, True)
@@ -113,8 +87,8 @@ def createPackage():
     return redirect("/manage-package/" + str(package.id))
 
 
-@app.route('/update-package', methods=['POST'])
-def updatePackage():
+@app.route('/update-package/<packageId>', methods=['POST'])
+def updatePackage(packageId):
     db = DBManager()
     package = PackageDelivery([], request.form['addressId'], request.form['driverId'])
     package.id = request.form['packageId']
@@ -125,8 +99,6 @@ def updatePackage():
 @app.route('/manage-package/<packageId>', methods=['GET'])
 def managePackage(packageId):
     db = DBManager()
-    fantas = []
-    cokes = []
     packageAux = PackageDelivery([])
     packageAux.id = packageId
     packageAux.pull(db)

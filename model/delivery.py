@@ -21,7 +21,7 @@ class PackageDelivery(IQueryable):
         return "created_at, destiny, driver_id, status"
 
     def values(self):
-        return "'{0}', {1}, {2}".format(self.created_at, self.destiny, self.driver, self.status)
+        return "'{0}', '{1}', '{2}', '{3}'".format(self.created_at, self.destiny, self.driver, self.status)
 
     def tableName(self):
         return "package"

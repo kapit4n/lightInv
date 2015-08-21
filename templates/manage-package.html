@@ -11,9 +11,8 @@
 {% block content %}
 
 <div>
-  <form action="{{url_for('updatePackage')}}" method="post">
-  <input type="hidden" name="packageId" value="{{package.id}}">
-    <table>
+  <form action="{{url_for('updatePackage', packageId=package.id)}}" method="PUT">
+   <table>
       <caption>Items of the package</caption>
       <thead>
         <tr>
@@ -35,7 +34,7 @@
 
     <input type="submit" value="save">
   </form>
-  <a href="/home?packageId={{package.id}}" >Add Items</a>
+  <a href="/quick?packageId={{package.id}}" >Add Items</a>
 </div>
 
   {% block footer %}

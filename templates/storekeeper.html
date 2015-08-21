@@ -10,33 +10,26 @@
 {% endblock %}
 {% block content %}
 
-<form action="{{url_for('product')}}" method="post">
-<dl>
-  <dt>Product</dt>
-  <dd>{{ forms.input('name') }}</dd>
-  <dt>Product Type</dt>
-  <dd>{{ forms.select('productType', 'Fanta' , productTypes) }}</dd>
-</dl>
-  <input type="submit" value="save">
-</form>
-
 <div>
   <form action="{{url_for('createPackage')}}" method="post">
     <input type="text" name="packageId" value="{{packageId}}" readonly>
-    <table>
-      <caption>table title and/or explanatory text</caption>
+    <table class="table table-striped">
+      <caption>create package</caption>
       <thead>
         <tr>
-          <th>Product Type</th>
-          <th>Product Name</th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Quantity</th>
+          <th>#</th>
         </tr>
       </thead>
       <tbody>
       {% for product in products %}
         <tr>
-          <td>{{product.type}}</td>
+          <td>{{product.code}}</td>
           <td>{{product.name}}</td>
-          <td>{{forms.checkbox('productId', (product.id|string) + '-' + product.type)}}</td>
+          <td>{{product.quantity}}</td>
+          <td>{{forms.checkbox('productId', product.id )}}</td>
         </tr>
       {% endfor %}
       </tbody>
