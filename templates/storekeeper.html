@@ -14,7 +14,7 @@
   <form action="{{url_for('createPackage')}}" method="post">
     <input type="text" name="packageId" value="{{packageId}}" readonly>
     <table class="table table-striped">
-      <caption>create package</caption>
+      <caption>{{session['user']}}</caption>
       <thead>
         <tr>
           <th>Code</th>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for,redirect
+from flask import Flask, session, render_template, url_for,redirect
 import datetime
 from flask import request
 from utils.queries import DBManager
@@ -7,6 +7,7 @@ from model.delivery import *
 from model.employee import *
 
 app = Flask(__name__)
+app.secret_key = 'mySecretKey'
 
 
 @app.template_filter()
@@ -19,12 +20,14 @@ app.jinja_env.filters['datetimefilter'] = datetimefilter
 
 @app.route("/")
 def template_test():
+    validUser()
     return render_template('template.html', my_string="Wheeeee!",
         my_list=[0, 1, 2, 3, 4, 5], title="Index", current_time=datetime.datetime.now())
 
 
 @app.route('/product', methods=['POST', 'GET'])
 def product():
+    validUser()
     db = DBManager()
     if request.method == 'POST':
         product = Product(request.form['name'], request.form['code1'], request.form['quantity'])
@@ -37,8 +40,31 @@ def product():
             products=products)
 
 
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    db = DBManager()
+    if request.method == 'POST':
+        validUser = True
+        if validUser:
+            session['user'] = request.form['login']
+            return redirect("/quick")
+        else: 
+            return redirect("/login")
+    else:
+        return render_template('login.html', title="Login User")
+
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+    if request.method == 'POST':
+        session['user'] = None
+        return redirect("/login")
+    else:
+        session['user'] = None
+        return redirect("/login")
+
 @app.route('/quick', methods=['POST', 'GET'])
-def home():
+def quick():
+    validUser()
     db = DBManager()
     if request.method == 'POST':
         product = Product(request.form['name'])
@@ -55,14 +81,9 @@ def home():
             products=products, packageId=packageIdAux)
 
 
-@app.route("/contact")
-def contact():
-    return render_template('template.html', my_string="FooBar",
-        my_list=[18, 19, 20, 21, 22, 23], title="Contact Us", current_time=datetime.datetime.now())
-
-
 @app.route('/create-package', methods=['POST'])
 def createPackage():
+    validUser()
     db = DBManager()
     packageId = 0
     if request.form['packageId'] is not None:
@@ -77,8 +98,6 @@ def createPackage():
 
     package = PackageDelivery(products)
     package.id = int(packageId)
-    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-    print(packageId)
     if package.id > 0:
         package.saveChilds(db)
     else:
@@ -89,6 +108,7 @@ def createPackage():
 
 @app.route('/update-package/<packageId>', methods=['POST'])
 def updatePackage(packageId):
+    validUser()
     db = DBManager()
     package = PackageDelivery([], request.form['addressId'], request.form['driverId'])
     package.id = request.form['packageId']
@@ -98,6 +118,7 @@ def updatePackage(packageId):
 
 @app.route('/manage-package/<packageId>', methods=['GET'])
 def managePackage(packageId):
+    validUser()
     db = DBManager()
     packageAux = PackageDelivery([])
     packageAux.id = packageId
@@ -110,6 +131,7 @@ def managePackage(packageId):
 
 @app.route('/package', methods=['GET'])
 def package():
+    validUser()
     db = DBManager()
     packageList = PackageDelivery.getList(db)
     return render_template('package.html', title="Package Administrator", 
@@ -121,20 +143,9 @@ def savePackage():
     pass
 
 
-@app.route('/driver', methods=['POST', 'GET'])
-def driver():
-    db = DBManager()
-    if request.method == 'POST':
-        driver = Driver(request.form['name'])
-        driver.save(db)
-        return redirect("/driver")
-    else:
-        drivers = Driver.getList(db)
-        return render_template('driver.html', title="Drivers", drivers=drivers)
-
-
 @app.route('/user', methods=['POST', 'GET'])
 def user():
+    validUser()
     db = DBManager()
     if request.method == 'POST':
         user = User(request.form['display_name'], request.form['email'],
@@ -147,17 +158,10 @@ def user():
         return render_template('user.html', title="Users", users=users)
 
 
-@app.route('/address', methods=['POST', 'GET'])
-def address():
-    db = DBManager()
-    if request.method == 'POST':
-        address = Address(request.form['city'], request.form['street'], request.form['number'])
-        address.save(db)
-        return redirect("/address")
-    else:
-        addressListAux = Address.getList(db)
-        return render_template('address.html', title="Address List", addressList=addressListAux)
-
+def validUser():
+    if session['user'] is None:
+        return redirect("/login")
 
 if __name__ == '__main__':
     app.run(debug=True)
+
