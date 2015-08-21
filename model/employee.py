@@ -124,3 +124,38 @@ class Storekeeper(Employee):
 
     def pullChildren(self, db):
         pass
+
+
+class Customer(Employee):
+    def __init__(self, display_name, email, login, user_type, id=0):
+        Employee.__init__(self, name)
+        self.display_name = display_name
+        self.email = email
+        self.login = login
+        self.user_type = user_type
+
+
+    def fields(self):
+        return 'display_name, email, login, user_type'
+
+    def values(self):
+        return "'{0}', '{1}', '{2}', '{3}'".format(self.display_name, self.email, self.login, self.user_type)
+
+    def tableName(self):
+        return "user"
+
+    def updateValues(self):
+        return "display_name= '{0}', email= '{1}', login= '{2}', user_type= '{3}'".format(self.display_name, self.email, self.login, self.user_type)
+
+    def setValues(self, cursor):
+        for (display_name, email, login, user_type) in cursor:
+            self.display_name = display_name
+            self.email = email
+            self.login = login
+            self.user_type = user_type
+
+    def saveChilds(self, db):
+        pass
+
+    def pullChildren(self, db):
+        pass

@@ -17,6 +17,13 @@
 
 {%- macro selectName(name, value, options) -%}
     <select name="{{ name }}" value="{{value}}">
+
+    {%- if value == '0' %}
+        <option value="0" selected> None</option>
+    {%- else %}
+        <option value="0"> None </option>
+    {%- endif %}
+
     {%- for option in options %}
         {%- if option.id|string == value %}
             <option value="{{option.id}}" selected> {{option.name}}</option>
