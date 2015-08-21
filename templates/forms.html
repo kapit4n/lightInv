@@ -28,6 +28,10 @@
 {%- endmacro %}
 
 {%- macro checkbox(name, value) -%}
-    <input type="checkbox" name="{{name}}" value="{{value}}" >
+    <input type="checkbox" name="{{name}}" value="{{value}}">
+{%- endmacro %}
+
+{%- macro hiddenInput(name, value) -%}
+    <input type="hidden" name="{{name}}" value="{{value}}" >
 {%- endmacro %}
 

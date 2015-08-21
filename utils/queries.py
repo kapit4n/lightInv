@@ -35,6 +35,8 @@ class IQueryable(object):
         else:
             query = "update {0} SET {1} where id={2}".format(self.tableName(), self.updateValues(), self.id)
             db.executeUpdate(query)
+            if saveChilds:
+                self.saveChilds(db)
 
     def pull(self, db):
         if self.id is not None:

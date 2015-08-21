@@ -32,8 +32,10 @@
     </table>
     {{ forms.selectName('driverId', package.driver|string , drivers) }}
     {{ forms.selectName('addressId', package.destiny|string , addressList) }}
+
     <input type="submit" value="save">
   </form>
+  <a href="/home?packageId={{package.id}}" >Add Items</a>
 </div>
 
   {% block footer %}

@@ -50,7 +50,6 @@ def product():
 def home():
     db = DBManager()
     if request.method == 'POST':
-        print(request.form)
         product = None
         if request.form['productType'] == "Fanta":
             product = Fanta(request.form['name'])
@@ -59,6 +58,9 @@ def home():
         product.save(DBManager())
         return redirect("/product")
     else:
+        packageIdAux = 0
+        if request.args.get('packageId') is not None:
+            packageIdAux = request.args.get('packageId')
         products = []
         for(id, name) in db.executeQuery("Select id, name from Fanta"):
             products.append(Fanta(name, id))
@@ -68,7 +70,7 @@ def home():
 
         return render_template('storekeeper.html', my_string="Bar",
             title="Store Keeper", current_time=datetime.datetime.now(), 
-            products=products, productTypes=['Fanta', 'Coke'])
+            products=products, productTypes=['Fanta', 'Coke'], packageId=packageIdAux)
 
 
 @app.route("/contact")
@@ -81,6 +83,9 @@ def contact():
 def createPackage():
     db = DBManager()
     fantas = []
+    packageId = 0
+    if request.form['packageId'] is not None:
+        packageId = request.form['packageId']
     cokes = []
     for product in request.values.getlist('productId'):
         if product.split('-')[1] == 'Fanta':
@@ -94,7 +99,12 @@ def createPackage():
             products.append(Fanta(name, id))
 
     package = PackageDelivery(products)
-    package.save(db, True)
+    package.id = packageId
+    if int(package.id) > 0:
+        package.saveChilds(db)
+    else:
+        package.save(db, True)
+
     return redirect("/manage-package/" + str(package.id))
 
 
