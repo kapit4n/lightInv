@@ -47,6 +47,7 @@ def login():
         validUser = True
         if validUser:
             session['user'] = request.form['login']
+            session['userId'] = 1
             return redirect("/quick")
         else:
             return redirect("/login")
@@ -106,7 +107,7 @@ def createPackage():
                 else:
                     p.quantity = int(request.form['productQuantity-' + str(p.id)])
 
-    package = PackageDelivery(products)
+    package = PackageDelivery(products, session['userId'])
     package.id = int(packageId)
     if package.id > 0:
         package.saveChilds(db)
@@ -146,7 +147,7 @@ def package():
     if validUser() != '':
         return validUser()
     db = DBManager()
-    packageList = PackageDelivery.getList(db)
+    packageList = PackageDelivery.getListByOwner(db, session['userId'])
     return render_template('package.html', title="Package Administrator", 
         packages=packageList)
 
