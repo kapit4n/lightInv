@@ -20,14 +20,14 @@ app.jinja_env.filters['datetimefilter'] = datetimefilter
 
 @app.route("/")
 def template_test():
-    validUser()
     return render_template('template.html', my_string="Wheeeee!",
         my_list=[0, 1, 2, 3, 4, 5], title="Index", current_time=datetime.datetime.now())
 
 
 @app.route('/product', methods=['POST', 'GET'])
 def product():
-    validUser()
+    if validUser() != '':
+        return validUser()
     db = DBManager()
     if request.method == 'POST':
         product = Product(request.form['name'], request.form['code1'], request.form['quantity'])
@@ -48,23 +48,25 @@ def login():
         if validUser:
             session['user'] = request.form['login']
             return redirect("/quick")
-        else: 
+        else:
             return redirect("/login")
     else:
         return render_template('login.html', title="Login User")
 
+
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
-    if request.method == 'POST':
-        session['user'] = None
-        return redirect("/login")
-    else:
-        session['user'] = None
-        return redirect("/login")
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    session.pop('user', None)
+    return redirect('/')
+
 
 @app.route('/quick', methods=['POST', 'GET'])
 def quick():
-    validUser()
+    if validUser() != '':
+        return validUser()
     db = DBManager()
     if request.method == 'POST':
         product = Product(request.form['name'])
@@ -83,9 +85,11 @@ def quick():
 
 @app.route('/create-package', methods=['POST'])
 def createPackage():
-    validUser()
+    if validUser() != '':
+        return validUser()
     db = DBManager()
     packageId = 0
+
     if request.form['packageId'] is not None:
         packageId = request.form['packageId']
     productIds = []
@@ -95,6 +99,12 @@ def createPackage():
 
     if len(productIds) > 0:
         products = Product.getList(db, ",".join(productIds))
+        if len(products) > 0:
+            for p in products:
+                if request.form['productQuantity-' + str(p.id)] is '':
+                    p.quantity = 0
+                else:
+                    p.quantity = int(request.form['productQuantity-' + str(p.id)])
 
     package = PackageDelivery(products)
     package.id = int(packageId)
@@ -108,7 +118,8 @@ def createPackage():
 
 @app.route('/update-package/<packageId>', methods=['POST'])
 def updatePackage(packageId):
-    validUser()
+    if validUser() != '':
+        return validUser()
     db = DBManager()
     package = PackageDelivery([], request.form['addressId'], request.form['driverId'])
     package.id = request.form['packageId']
@@ -118,7 +129,8 @@ def updatePackage(packageId):
 
 @app.route('/manage-package/<packageId>', methods=['GET'])
 def managePackage(packageId):
-    validUser()
+    if validUser() != '':
+        return validUser()
     db = DBManager()
     packageAux = PackageDelivery([])
     packageAux.id = packageId
@@ -131,7 +143,8 @@ def managePackage(packageId):
 
 @app.route('/package', methods=['GET'])
 def package():
-    validUser()
+    if validUser() != '':
+        return validUser()
     db = DBManager()
     packageList = PackageDelivery.getList(db)
     return render_template('package.html', title="Package Administrator", 
@@ -145,7 +158,8 @@ def savePackage():
 
 @app.route('/user', methods=['POST', 'GET'])
 def user():
-    validUser()
+    if validUser() != '':
+        return validUser()
     db = DBManager()
     if request.method == 'POST':
         user = User(request.form['display_name'], request.form['email'],
@@ -159,8 +173,11 @@ def user():
 
 
 def validUser():
-    if session['user'] is None:
-        return redirect("/login")
+    if 'user' in session:
+        if session['user'] != None:
+            return ''
+    return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

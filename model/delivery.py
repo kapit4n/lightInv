@@ -9,7 +9,7 @@ class PackageDelivery(IQueryable):
         self.created_at = datetime.datetime.now()
         self.packageItems = []
         for product in products:
-            self.packageItems.append(PackageItem(id, product.id, product.name))
+            self.packageItems.append(PackageItem(id, product.id, product.name, product.quantity))
         self.products = products
         self.driver = driver
         self.destiny = destiny
@@ -45,13 +45,13 @@ class PackageDelivery(IQueryable):
             item.save(db)
 
     def pullChildren(self, db):
-        childrenFields = "id, package_id, product_id, product_name"
+        childrenFields = "id, package_id, product_id, product_name, quantity"
         childTable = "package_item"
         queryFormat = "select {0} from {1} where package_id = {2}"
         query = queryFormat.format(childrenFields, childTable, self.id)
         self.packageItems = []
-        for (id, package_id, product_id, product_name) in db.executeQuery(query):
-            self.packageItems.append(PackageItem(package_id, product_id, product_name, id))
+        for (id, package_id, product_id, product_name, quantity) in db.executeQuery(query):
+            self.packageItems.append(PackageItem(package_id, product_id, product_name, quantity, id))
 
     @staticmethod
     def getList(db):
@@ -63,29 +63,31 @@ class PackageDelivery(IQueryable):
 
 
 class PackageItem(IQueryable):
-    def __init__(self, packageId, productId, productName, id=0):
+    def __init__(self, packageId, productId, productName, quantity=0, id=0):
         self.productId = productId
         self.productName = productName
+        self.quantity = quantity
         self.id = id
         self.packageId = packageId
 
     def fields(self):
-        return "package_id, product_id, product_name"
+        return "package_id, product_id, product_name, quantity"
 
     def values(self):
-        return "{0},{1},'{2}'".format(self.packageId, self.productId, self.productName)
+        return "{0},{1},'{2}','{3}'".format(self.packageId, self.productId, self.productName, self.quantity)
 
     def tableName(self):
         return "package_item"
 
     def updateValues(self):
-        return "package_id = {0}, product_id= {1}, product_name= '{2}'".format(self.productId, self.productName)
+        return "package_id = {0}, product_id= {1}, product_name= '{2}', quantity= '{3}'".format(self.productId, self.productName, self.quantity)
 
     def setValues(self, cursor):
-        for (package_id, product_id, product_name) in cursor:
+        for (package_id, product_id, product_name, quantity) in cursor:
             self.productId = product_id
             self.productName = product_name
             self.packageId = package_id
+            self.quantity = quantity
 
     def saveChilds(self, db):
         pass
