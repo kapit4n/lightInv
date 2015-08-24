@@ -41,7 +41,7 @@
             <button type="submit" class="btn btn-default">Submit</button>
           </form>
           <ul class="nav navbar-nav navbar-right">
-            {% if session['user'] is none %}
+            {% if 'user' not in session %}
               <li><a href="/login">Login</a></li>
             {% else %}
               <li><a href="/logout">logout</a></li>
