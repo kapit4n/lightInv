@@ -1,7 +1,7 @@
 import abc
-from model.product import *
-from model.delivery import *
-from queue import *
+from model.delivery import PackageDelivery
+from queue import Queue
+from utils.queries import IQueryable
 
 
 class Employee(IQueryable):
@@ -82,11 +82,7 @@ class Storekeeper(Employee):
         self.packages = Queue()
 
     def buildInitialPackage(self):
-        products = []
-        products.append(Fanta("fanta"))
-        products.append(Coke("coke"))
-        dest = Address("main st", "1010")
-        self.packages.put(PackageDelivery(products, dest))
+        pass
 
     def createPachage(self, products, dest):
         res = PackageDelivery(products, dest)
@@ -127,7 +123,8 @@ class Storekeeper(Employee):
 
 
 class User(Employee):
-    def __init__(self, display_name, email, login, password, user_type, id=0):
+    def __init__(self, display_name, email='', login='', password='',
+                 user_type='', id=0):
         Employee.__init__(self, display_name)
         self.display_name = display_name
         self.email = email
@@ -170,9 +167,22 @@ class User(Employee):
 
     @staticmethod
     def getList(db):
-        query = "select id, display_name, email, login, password, user_type from user"
+        query = "select id, display_name, email, login, password, user_type"\
+            " from user"
         users = []
-        for (id, display_name, email, login, password, user_type) in db.executeQuery(query):
+        qResult = db.executeQuery(query)
+        for (id, display_name, email, login, password, user_type) in qResult:
             users.append(User(display_name, email, login, password,
                               user_type, id))
         return users
+
+    @staticmethod
+    def login(db, login, password):
+        query = "select id, display_name, email from user "\
+            "where login='{0}' and password='{1}'"\
+            .format(login, password)
+        for(id, display_name, email) in db.executeQuery(query):
+            user = User(display_name, email)
+            user.id = id
+            return user
+        return None

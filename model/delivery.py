@@ -1,5 +1,4 @@
-from utils.queries import *
-from model.product import *
+from utils.queries import IQueryable
 import datetime
 
 

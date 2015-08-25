@@ -1,6 +1,5 @@
 
-import abc
-from utils.queries import *
+from utils.queries import IQueryable
 
 
 class Product(IQueryable):

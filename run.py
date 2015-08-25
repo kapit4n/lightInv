@@ -1,10 +1,10 @@
-from flask import Flask, session, render_template, url_for,redirect
+from flask import Flask, session, render_template, url_for, redirect
 import datetime
 from flask import request
 from utils.queries import DBManager
-from model.product import *
-from model.delivery import *
-from model.employee import *
+from model.product import Product
+from model.delivery import PackageDelivery, Address
+from model.employee import User, Driver
 
 app = Flask(__name__)
 app.secret_key = 'mySecretKey'
@@ -47,10 +47,10 @@ def product():
 def login():
     db = DBManager()
     if request.method == 'POST':
-        validUser = True
-        if validUser:
-            session['user'] = request.form['login']
-            session['userId'] = 1
+        user = User.login(db, request.form['login'], request.form['password'])
+        if user is not None:
+            session['user'] = user.display_name
+            session['userId'] = user.id
             return redirect("/quick")
         else:
             return redirect("/login")
