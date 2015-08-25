@@ -21,7 +21,8 @@ app.jinja_env.filters['datetimefilter'] = datetimefilter
 @app.route("/")
 def template_test():
     return render_template('template.html', my_string="Wheeeee!",
-        my_list=[0, 1, 2, 3, 4, 5], title="Index", current_time=datetime.datetime.now())
+                           my_list=[0, 1, 2, 3, 4, 5], title="Index",
+                           current_time=datetime.datetime.now())
 
 
 @app.route('/product', methods=['POST', 'GET'])
@@ -30,14 +31,16 @@ def product():
         return validUser()
     db = DBManager()
     if request.method == 'POST':
-        product = Product(request.form['name'], request.form['code1'], request.form['quantity'])
+        product = Product(request.form['name'], request.form['code1'],
+                          request.form['quantity'])
         product.save(DBManager())
         return redirect("/product")
     else:
         products = Product.getList(db)
         return render_template('products.html', my_string="Bar",
-            title="Products", current_time=datetime.datetime.now(),
-            products=products)
+                               title="Products",
+                               current_time=datetime.datetime.now(),
+                               products=products)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -80,8 +83,9 @@ def quick():
         products = Product.getList(db)
 
         return render_template('storekeeper.html', my_string="Bar",
-            title="Store Keeper", current_time=datetime.datetime.now(), 
-            products=products, packageId=packageIdAux)
+                               title="Store Keeper",
+                               current_time=datetime.datetime.now(),
+                               products=products, packageId=packageIdAux)
 
 
 @app.route('/create-package', methods=['POST'])
@@ -122,7 +126,8 @@ def updatePackage(packageId):
     if validUser() != '':
         return validUser()
     db = DBManager()
-    package = PackageDelivery([], request.form['addressId'], request.form['driverId'])
+    package = PackageDelivery([], request.form['addressId'],
+                              request.form['driverId'])
     package.id = request.form['packageId']
     package.save(db)
     return redirect("/manage-package/" + str(package.id))
@@ -138,8 +143,9 @@ def managePackage(packageId):
     packageAux.pull(db)
     driverList = Driver.getList(db)
     addressListAux = Address.getList(db)
-    return render_template('manage-package.html', title="Package Administrator", 
-        package=packageAux, drivers=driverList, addressList=addressListAux)
+    return render_template('manage-package.html', title="Package Administrator",
+                           package=packageAux, drivers=driverList,
+                           addressList=addressListAux)
 
 
 @app.route('/package', methods=['GET'])
@@ -148,8 +154,8 @@ def package():
         return validUser()
     db = DBManager()
     packageList = PackageDelivery.getListByOwner(db, session['userId'])
-    return render_template('package.html', title="Package Administrator", 
-        packages=packageList)
+    return render_template('package.html', title="Package Administrator",
+                           packages=packageList)
 
 
 @app.route('/customer', methods=['GET'])
@@ -158,8 +164,8 @@ def customer():
         return validUser()
     db = DBManager()
     packageList = PackageDelivery.getListByCustomer(db, session['userId'])
-    return render_template('customer.html', title="Customer", 
-        packages=packageList)
+    return render_template('customer.html', title="Customer",
+                           packages=packageList)
 
 
 @app.route('/save-package', methods=['POST'])
@@ -174,8 +180,8 @@ def user():
     db = DBManager()
     if request.method == 'POST':
         user = User(request.form['display_name'], request.form['email'],
-            request.form['login'], request.form['password'],
-            request.form['user_type'])
+                    request.form['login'], request.form['password'],
+                    request.form['user_type'])
         user.save(db)
         return redirect("/user")
     else:

@@ -141,15 +141,18 @@ class User(Employee):
         return 'display_name, email, login, password, user_type'
 
     def values(self):
-        return "'{0}', '{1}', '{2}', '{3}', '{4}'".format(self.display_name, self.email, 
-            self.login, self.password, self.user_type)
+        return "'{0}', '{1}', '{2}', '{3}', '{4}'"\
+            .format(self.display_name, self.email, self.login, self.password,
+                    self.user_type)
 
     def tableName(self):
         return "user"
 
     def updateValues(self):
-        return "display_name= '{0}', email= '{1}', login= '{2}', password= '{3}', user_type= '{4}'".format(self.display_name, 
-            self.email, self.login, self.password, self.user_type)
+        return "display_name= '{0}', email= '{1}', login= '{2}',"\
+            "password= '{3}', user_type= '{4}'"\
+            .format(self.display_name, self.email, self.login, self.password,
+                    self.user_type)
 
     def setValues(self, cursor):
         for (display_name, email, login, password, user_type) in cursor:
@@ -170,5 +173,6 @@ class User(Employee):
         query = "select id, display_name, email, login, password, user_type from user"
         users = []
         for (id, display_name, email, login, password, user_type) in db.executeQuery(query):
-            users.append(User(display_name, email, login, password, user_type, id))
+            users.append(User(display_name, email, login, password,
+                              user_type, id))
         return users

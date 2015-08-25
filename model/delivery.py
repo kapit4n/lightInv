@@ -5,11 +5,13 @@ import datetime
 
 class PackageDelivery(IQueryable):
 
-    def __init__(self, products, owner=0, customer=0, destiny=0, driver=0, status='new', id=0):
+    def __init__(self, products, owner=0, customer=0, destiny=0, driver=0,
+                 status='new', id=0):
         self.created_at = datetime.datetime.now()
         self.packageItems = []
         for product in products:
-            self.packageItems.append(PackageItem(id, product.id, product.name, product.quantity))
+            self.packageItems.append(PackageItem(id, product.id, product.name,
+                                                 product.quantity))
         self.products = products
         self.owner = owner
         self.customer = customer
@@ -17,19 +19,23 @@ class PackageDelivery(IQueryable):
         self.destiny = destiny
         self.id = id
         self.status = status
-        self.name = "Package ({0}, {1}, {2})".format(self.created_at, self.destiny, self.driver)
+        self.name = "Package ({0}, {1}, {2})"\
+            .format(self.created_at, self.destiny, self.driver)
 
     def fields(self):
         return "created_at, owner, customer, destiny, driver_id, status "
 
     def values(self):
-        return "'{0}', '{1}', '{2}', '{3}', '{4}', '{5}'".format(self.created_at, self.owner, self.customer, self.destiny, self.driver, self.status)
+        return "'{0}', '{1}', '{2}', '{3}', '{4}', '{5}'"\
+            .format(self.created_at, self.owner, self.customer, self.destiny,
+                    self.driver, self.status)
 
     def tableName(self):
         return "package"
 
     def updateValues(self):
-        return "driver_id= '{0}', destiny= '{1}'".format(self.driver, self.destiny)
+        return "driver_id= '{0}', destiny= '{1}'"\
+            .format(self.driver, self.destiny)
 
     def updateStatusValue(self):
         return "status= '{0}'".format(self.status)
@@ -55,14 +61,16 @@ class PackageDelivery(IQueryable):
         query = queryFormat.format(childrenFields, childTable, self.id)
         self.packageItems = []
         for (id, package_id, product_id, product_name, quantity) in db.executeQuery(query):
-            self.packageItems.append(PackageItem(package_id, product_id, product_name, quantity, id))
+            self.packageItems.append(PackageItem(package_id, product_id,
+                                                 product_name, quantity, id))
 
     @staticmethod
     def getList(db):
         query = "select id, created_at, owner, customer, destiny, driver_id, status from package"
         packageList = []
         for (id, created_at, owner, customer, destiny, driver_id, status) in db.executeQuery(query):
-            packageList.append(PackageDelivery([], owner, customer, destiny, driver_id, status, id))
+            packageList.append(PackageDelivery([], owner, customer, destiny, 
+                                               driver_id, status, id))
         return packageList
 
     @staticmethod
@@ -70,7 +78,8 @@ class PackageDelivery(IQueryable):
         query = "select id, created_at, owner, customer, destiny, driver_id, status from package where owner='{0}'".format(ownerId)
         packageList = []
         for (id, created_at, owner, customer, destiny, driver_id, status) in db.executeQuery(query):
-            packageList.append(PackageDelivery([], owner, customer, destiny, driver_id, status, id))
+            packageList.append(PackageDelivery([], owner, customer, destiny,
+                                               driver_id, status, id))
         return packageList
 
     @staticmethod
@@ -78,7 +87,8 @@ class PackageDelivery(IQueryable):
         query = "select id, created_at, owner, customer, destiny, driver_id, status from package where customer='{0}'".format(ownerId)
         packageList = []
         for (id, created_at, owner, customer, destiny, driver_id, status) in db.executeQuery(query):
-            packageList.append(PackageDelivery([], owner, customer, destiny, driver_id, status, id))
+            packageList.append(PackageDelivery([], owner, customer, destiny,
+                                               driver_id, status, id))
         return packageList
 
 
@@ -94,13 +104,16 @@ class PackageItem(IQueryable):
         return "package_id, product_id, product_name, quantity"
 
     def values(self):
-        return "{0},{1},'{2}','{3}'".format(self.packageId, self.productId, self.productName, self.quantity)
+        return "{0},{1},'{2}','{3}'".format(self.packageId, self.productId,
+                                            self.productName, self.quantity)
 
     def tableName(self):
         return "package_item"
 
     def updateValues(self):
-        return "package_id = {0}, product_id= {1}, product_name= '{2}', quantity= '{3}'".format(self.productId, self.productName, self.quantity)
+        return "package_id = {0}, product_id= {1}, product_name= '{2}',"\
+            "quantity= '{3}'".format(self.productId, self.productName,
+                                     self.quantity)
 
     def setValues(self, cursor):
         for (package_id, product_id, product_name, quantity) in cursor:
@@ -134,7 +147,8 @@ class Address(IQueryable):
         return "address"
 
     def updateValues(self):
-        return "city= '{0}', street= '{1}', number= {2}".format(self.city, self.street, self.number)
+        return "city= '{0}', street= '{1}', number= {2}"\
+            .format(self.city, self.street, self.number)
 
     def setValues(self, cursor):
         for (name) in cursor:
@@ -172,7 +186,8 @@ class Car(IQueryable):
         return "car"
 
     def updateValues(self):
-        return "model= '{0}', capacity= {1}, type= '{2}'".format(self.model, self.capacity, self.type)
+        return "model= '{0}', capacity= {1}, type= '{2}'"\
+            .format(self.model, self.capacity, self.type)
 
     def setValues(self, cursor):
         for (name) in cursor:

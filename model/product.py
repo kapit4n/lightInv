@@ -1,5 +1,7 @@
+
 import abc
 from utils.queries import *
+
 
 class Product(IQueryable):
     def __init__(self, name, code, quantity=0, id=0):
@@ -18,7 +20,8 @@ class Product(IQueryable):
         return "product"
 
     def updateValues(self):
-        return "name= '{0}', code= '{1}', quantity= '{2}'".format(self.name, self.code, self.quantity)
+        return "name= '{0}', code= '{1}', quantity= '{2}'"\
+            .format(self.name, self.code, self.quantity)
 
     def setValues(self, cursor):
         for (name, code, quantity) in cursor:
@@ -37,9 +40,9 @@ class Product(IQueryable):
         if ids is None:
             query = "select id, name, code, quantity from product"
         else:
-            query = "select id, name, code, quantity from product where id in ({})".format(ids)
+            query = "select id, name, code, quantity from product "\
+                " where id in ({0})".format(ids)
         products = []
         for (id, name, code, quantity) in db.executeQuery(query):
             products.append(Product(name, code, quantity, id))
         return products
-
