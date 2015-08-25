@@ -35,7 +35,7 @@ class PackageDelivery(IQueryable):
         return "status= '{0}'".format(self.status)
 
     def setValues(self, cursor):
-        for (created_at, owner, self.customer, destiny, driver_id, status) in cursor:
+        for (created_at, owner, customer, destiny, driver_id, status) in cursor:
             self.created_at = created_at
             self.owner = owner
             self.customer = customer
