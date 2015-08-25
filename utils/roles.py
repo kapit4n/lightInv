@@ -8,6 +8,13 @@ class UserManager:
         userMenus = {'customer': customer, 'storekeeper': storekeeper}
         return userMenus[userType]
 
+    @staticmethod
+    def getInititalPage(userType):
+        customer = '/customer'
+        storekeeper = '/quick'
+        initialPage = {'customer': customer, 'storekeeper': storekeeper}
+        return initialPage[userType]
+
 
 class MenuItem:
     def __init__(self, dir, name):

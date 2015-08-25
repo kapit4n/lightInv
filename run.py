@@ -54,7 +54,7 @@ def login():
             session['user'] = user.display_name
             session['userId'] = user.id
             session['user_type'] = user.user_type
-            return redirect("/quick")
+            return redirect(UserManager.getInititalPage(user.user_type))
         else:
             return redirect("/login")
     else:
