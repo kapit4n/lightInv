@@ -1,0 +1,37 @@
+{% import 'forms.html' as forms %}
+{% extends "layout.html" %}
+{% block title %}{{title}}{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block page %}{{title}}{% endblock %}
+{% block heading %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+<div>
+  <table>
+    <caption>Package List</caption>
+    <thead>
+      <tr>
+        <th>Package Id</th>
+        <th>Package Name</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for package in packages %}
+      <tr>
+        <td>{{package.id}}</td>
+        <td>{{package.name}}</td>
+        <td><a href="manage-package/{{package.id}}" >{{package.id}}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+  {% block footer %}
+  {{super()}}
+  {% endblock %}
+{% endblock %}

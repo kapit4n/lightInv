@@ -5,13 +5,14 @@ import datetime
 
 class PackageDelivery(IQueryable):
 
-    def __init__(self, products, owner=0, destiny=0, driver=0, status='new', id=0):
+    def __init__(self, products, owner=0, customer=0, destiny=0, driver=0, status='new', id=0):
         self.created_at = datetime.datetime.now()
         self.packageItems = []
         for product in products:
             self.packageItems.append(PackageItem(id, product.id, product.name, product.quantity))
         self.products = products
         self.owner = owner
+        self.customer = customer
         self.driver = driver
         self.destiny = destiny
         self.id = id
@@ -19,10 +20,10 @@ class PackageDelivery(IQueryable):
         self.name = "Package ({0}, {1}, {2})".format(self.created_at, self.destiny, self.driver)
 
     def fields(self):
-        return "created_at, owner, destiny, driver_id, status "
+        return "created_at, owner, customer, destiny, driver_id, status "
 
     def values(self):
-        return "'{0}', '{1}', '{2}', '{3}', '{4}'".format(self.created_at, self.owner, self.destiny, self.driver, self.status)
+        return "'{0}', '{1}', '{2}', '{3}', '{4}', '{5}'".format(self.created_at, self.owner, self.customer, self.destiny, self.driver, self.status)
 
     def tableName(self):
         return "package"
@@ -34,9 +35,10 @@ class PackageDelivery(IQueryable):
         return "status= '{0}'".format(self.status)
 
     def setValues(self, cursor):
-        for (created_at, owner, destiny, driver_id, status) in cursor:
+        for (created_at, owner, self.customer, destiny, driver_id, status) in cursor:
             self.created_at = created_at
             self.owner = owner
+            self.customer = customer
             self.destiny = destiny
             self.driver = driver_id
             self.status = status
@@ -57,21 +59,27 @@ class PackageDelivery(IQueryable):
 
     @staticmethod
     def getList(db):
-        query = "select id, created_at, owner, destiny, driver_id, status from package"
+        query = "select id, created_at, owner, customer, destiny, driver_id, status from package"
         packageList = []
-        for (id, created_at, owner, destiny, driver_id, status) in db.executeQuery(query):
-            packageList.append(PackageDelivery([], owner, destiny, driver_id, status, id))
+        for (id, created_at, owner, customer, destiny, driver_id, status) in db.executeQuery(query):
+            packageList.append(PackageDelivery([], owner, customer, destiny, driver_id, status, id))
         return packageList
 
     @staticmethod
     def getListByOwner(db, ownerId):
-        query = "select id, created_at, owner, destiny, driver_id, status from package where owner='{0}'".format(ownerId)
+        query = "select id, created_at, owner, customer, destiny, driver_id, status from package where owner='{0}'".format(ownerId)
         packageList = []
-        for (id, created_at, owner, destiny, driver_id, status) in db.executeQuery(query):
-            packageList.append(PackageDelivery([], owner, destiny, driver_id, status, id))
+        for (id, created_at, owner, customer, destiny, driver_id, status) in db.executeQuery(query):
+            packageList.append(PackageDelivery([], owner, customer, destiny, driver_id, status, id))
         return packageList
 
-    
+    @staticmethod
+    def getListByCustomer(db, ownerId):
+        query = "select id, created_at, owner, customer, destiny, driver_id, status from package where customer='{0}'".format(ownerId)
+        packageList = []
+        for (id, created_at, owner, customer, destiny, driver_id, status) in db.executeQuery(query):
+            packageList.append(PackageDelivery([], owner, customer, destiny, driver_id, status, id))
+        return packageList
 
 
 class PackageItem(IQueryable):

@@ -152,6 +152,16 @@ def package():
         packages=packageList)
 
 
+@app.route('/customer', methods=['GET'])
+def customer():
+    if validUser() != '':
+        return validUser()
+    db = DBManager()
+    packageList = PackageDelivery.getListByCustomer(db, session['userId'])
+    return render_template('customer.html', title="Customer", 
+        packages=packageList)
+
+
 @app.route('/save-package', methods=['POST'])
 def savePackage():
     pass
