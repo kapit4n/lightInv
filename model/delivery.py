@@ -4,7 +4,7 @@ import datetime
 
 class PackageDelivery(IQueryable):
 
-    def __init__(self, products, owner=0, customer=0, destiny=0, driver=0,
+    def __init__(self, products=[], owner=0, customer=0, destiny=0, driver=0,
                  status='new', id=0):
         self.created_at = datetime.datetime.now()
         self.packageItems = []
@@ -33,8 +33,19 @@ class PackageDelivery(IQueryable):
         return "package"
 
     def updateValues(self):
-        return "driver_id= '{0}', destiny= '{1}'"\
-            .format(self.driver, self.destiny)
+        updateSt = []
+        if int(self.owner) > 0:
+            updateSt.append("owner= '{0}'".format(self.owner))
+        if int(self.customer) > 0:
+            updateSt.append("customer= '{0}'".format(self.customer))
+        if int(self.destiny) > 0:
+            updateSt.append("destiny= '{0}'".format(self.destiny))
+        if int(self.driver) > 0:
+            updateSt.append("driver_id= '{0}'".format(self.driver))
+        if self.status != 'new':
+            updateSt.append("status= '{0}'".format(self.status))
+
+        return ','.join(updateSt)
 
     def updateStatusValue(self):
         return "status= '{0}'".format(self.status)

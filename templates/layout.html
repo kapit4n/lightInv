@@ -29,10 +29,9 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            {{ nav_link('quick', 'Quick Package') }}
-            {{ nav_link('product', 'Product') }}
-            {{ nav_link('user', 'Users') }}
-            {{ nav_link('package', 'Package') }}
+            {% for menuItem in userMenu %}
+            {{ nav_link(menuItem.dir, menuItem.name) }}
+            {% endfor %}
           </ul>
           <form class="navbar-form navbar-left" role="search">
             <div class="form-group">

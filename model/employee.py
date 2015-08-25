@@ -24,7 +24,7 @@ class Employee(IQueryable):
         return "storekeeper"
 
     def updateValues(self):
-        return "name= '{0}'".format(self.name + ' Updated')
+        return "name= '{0}'".format(self.name)
 
     def setValues(self, cursor):
         for (name) in cursor:
@@ -55,7 +55,7 @@ class Driver(Employee):
         return "driver"
 
     def updateValues(self):
-        return "name= '{0}'".format(self.name + ' Updated')
+        return "name= '{0}'".format(self.name)
 
     def setValues(self, cursor):
         for (hello) in cursor:
@@ -109,7 +109,7 @@ class Storekeeper(Employee):
         return "storekeeper"
 
     def updateValues(self):
-        return "name= '{0}'".format(self.name + ' Updated')
+        return "name= '{0}'".format(self.name)
 
     def setValues(self, cursor):
         for (name) in cursor:
@@ -177,12 +177,24 @@ class User(Employee):
         return users
 
     @staticmethod
+    def getListByType(db, user_type):
+        query = "select id, display_name, email, login, password, user_type"\
+            " from user where user_type='{0}'".format(user_type)
+        users = []
+        qResult = db.executeQuery(query)
+        for (id, display_name, email, login, password, user_type) in qResult:
+            users.append(User(display_name, email, login, password,
+                              user_type, id))
+        return users
+
+    @staticmethod
     def login(db, login, password):
-        query = "select id, display_name, email from user "\
+        query = "select id, display_name, user_type from user "\
             "where login='{0}' and password='{1}'"\
             .format(login, password)
-        for(id, display_name, email) in db.executeQuery(query):
-            user = User(display_name, email)
+        for(id, display_name, user_type) in db.executeQuery(query):
+            user = User(display_name)
+            user.user_type = user_type
             user.id = id
             return user
         return None
