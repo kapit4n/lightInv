@@ -10,7 +10,6 @@
 {% endblock %}
 {% block content %}
 <style>
-/* Flaired edges, by Tomas Theunissen */
 
 hr.style-seven {
     height: 5px;
@@ -19,7 +18,7 @@ hr.style-seven {
     border-width: 1px 0 0 0;
     border-radius: 20px;
 }
-hr.style-seven:before { /* Not really supposed to work, but does */
+hr.style-seven:before {
     display: block;
     content: "";
     height: 5px;
@@ -58,11 +57,12 @@ hr.style-seven:before { /* Not really supposed to work, but does */
           </div>
       </form>
     {% endfor %}
-
   <hr class="style-seven">
+{% if session['user_type'] == 'storekeeper' %}
   <a href="/quick?packageId={{package.id}}" >Add Items</a>
+{% endif %}
    <table class="table table-striped">
-      <caption>Package Items</caption>
+      <caption></caption>
       <thead>
         <tr>
           <th>Product Id</th>

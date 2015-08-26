@@ -263,7 +263,19 @@ class PackageManager:
                        'accepted': sAccepted, 'closed': [],
                        'abandoned': sAbandoned, 'held': sOnHold}
 
-        workflows = {'customer': storekeeper, 'driver': storekeeper,
+        customer = {'pending': [], 'packaging': [],
+                    'packaged': [], 'shipping': [],
+                    'dispatched': [sDelivered], 'rejected': [],
+                    'accepted': [], 'closed': [],
+                    'abandoned': [], 'held': []}
+
+        driver = {'pending': [], 'packaging': [],
+                  'packaged': [], 'shipping': sShipping,
+                  'dispatched': [], 'rejected': [],
+                  'accepted': [], 'closed': [],
+                  'abandoned': [], 'held': []}
+
+        workflows = {'customer': customer, 'driver': driver,
                      'storekeeper': storekeeper}
         return (workflows[userType])[packageStatus]
 

@@ -4,7 +4,7 @@ from flask import request
 from utils.queries import DBManager
 from model.product import Product
 from model.delivery import PackageDelivery, Address, PackageManager
-from model.employee import User, Driver
+from model.employee import User
 from utils.roles import UserManager
 
 app = Flask(__name__)
@@ -175,10 +175,10 @@ def managePackage(packageId):
     driverList = User.getListByType(db, 'driver')
     customers = User.getListByType(db, 'customer')
     workflows = PackageManager.getWorkflows(session['user_type'],
-                                         packageAux.status)
+                                            packageAux.status)
 
     return render_template('manage-package.html',
-                           title="Package Administrator",
+                           title="Package",
                            package=packageAux, drivers=driverList,
                            customers=customers, userMenu=getUserRoles(),
                            workflows=workflows)
@@ -192,12 +192,11 @@ def reviewPackage(packageId):
     packageAux = PackageDelivery([])
     packageAux.id = packageId
     packageAux.pull(db)
-    driverList = Driver.getList(db)
-    addressListAux = Address.getList(db)
+    driverList = User.getListByType(db, 'driver')
     return render_template('manage-package.html',
-                           title="Package Administrator",
+                           title="Package",
                            package=packageAux, drivers=driverList,
-                           addressList=addressListAux, userMenu=getUserRoles())
+                           userMenu=getUserRoles())
 
 
 @app.route('/package', methods=['GET'])
@@ -216,7 +215,7 @@ def customer():
         return validUser()
     db = DBManager()
     packageList = PackageDelivery.getListByType(db, session['userId'],
-                                                session['usert_type'])
+                                                session['user_type'])
     return render_template('customer.html', title="Customer",
                            packages=packageList, userMenu=getUserRoles())
 

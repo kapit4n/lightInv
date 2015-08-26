@@ -1,6 +1,4 @@
 import abc
-from model.delivery import PackageDelivery
-from queue import Queue
 from utils.queries import IQueryable
 
 
@@ -16,91 +14,6 @@ class Employee(IQueryable):
 
     def fields(self):
         return 'driver'
-
-    def values(self):
-        return "'{0}'".format(self.name)
-
-    def tableName(self):
-        return "storekeeper"
-
-    def updateValues(self):
-        return "name= '{0}'".format(self.name)
-
-    def setValues(self, cursor):
-        for (name) in cursor:
-                self.name = name
-
-    def saveChilds(self, db):
-        pass
-
-    def pullChildren(self, db):
-        pass
-
-
-class Driver(Employee):
-    def __init__(self, name, id=0):
-        Employee.__init__(self, name)
-        self.id = id
-
-    def drive(self):
-        pass
-
-    def fields(self):
-        return 'name'
-
-    def values(self):
-        return "'{0}'".format(self.name)
-
-    def tableName(self):
-        return "driver"
-
-    def updateValues(self):
-        return "name= '{0}'".format(self.name)
-
-    def setValues(self, cursor):
-        for (hello) in cursor:
-                self.name = hello
-
-    def saveChilds(self, db):
-        pass
-
-    def pullChildren(self, db):
-        pass
-
-    @staticmethod
-    def getList(db):
-        query = "select id, name from driver"
-        drivers = []
-        for (id, name) in db.executeQuery(query):
-            drivers.append(Driver(name, id))
-        return drivers
-
-
-class Storekeeper(Employee):
-    def __init__(self, name, id=0):
-        Employee.__init__(self, name)
-        self.packages = Queue()
-
-    def buildInitialPackage(self):
-        pass
-
-    def createPachage(self, products, dest):
-        res = PackageDelivery(products, dest)
-        return res
-
-    def enQueuePackage(self, package):
-        self.packages.put(package)
-
-    def deliverPackage(self):
-        if not self.packages.empty():
-            item = self.packages.get()
-            self.packages.task_done()
-            return item
-        else:
-            return None
-
-    def fields(self):
-        return 'name'
 
     def values(self):
         return "'{0}'".format(self.name)
