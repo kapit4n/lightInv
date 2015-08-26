@@ -45,7 +45,6 @@ hr.style-seven:before {
   </div>
   <hr class="style-seven">
 {% endif %}
-
     {% for workflow in workflows %}
       <form action="{{url_for('start')}}" method="POST" role="form" style="display:inline-block;">
           <input type="hidden" name="packageId" value="{{package.id}}">
@@ -57,6 +56,14 @@ hr.style-seven:before {
           </div>
       </form>
     {% endfor %}
+    <form action="{{url_for('fillPackage')}}" method="POST" role="form" style="display:inline-block;">
+      <input type="hidden" name="packageId" value="{{package.id}}">
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <button type="submit" class="btn btn-default">Fill Package</button>
+        </div>
+      </div>
+    </form>
   <hr class="style-seven">
 {% if session['user_type'] == 'storekeeper' %}
   <a href="/quick?packageId={{package.id}}" >Add Items</a>
@@ -68,6 +75,7 @@ hr.style-seven:before {
           <th>Product Id</th>
           <th>Product Name</th>
           <th>Quantity</th>
+          <th>Filled</th>
         </tr>
       </thead>
       <tbody>
@@ -76,6 +84,7 @@ hr.style-seven:before {
           <td>{{item.productId}}</td>
           <td>{{item.productName}}</td>
           <td>{{item.quantity}}</td>
+          <td>{{item.quantity_filled}}</td>
         </tr>
       {% endfor %}
       </tbody>

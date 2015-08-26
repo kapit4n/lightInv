@@ -237,6 +237,17 @@ def start():
     return redirect('manage-package/' + request.form['packageId'])
 
 
+@app.route('/fill-package', methods=['POST'])
+def fillPackage():
+    db = DBManager()
+    package = PackageDelivery()
+    package.id = request.form['packageId']
+    package.pull(db)
+    package.fillPackage(db)
+    return redirect('manage-package/' + request.form['packageId'])
+
+
+
 @app.route('/user', methods=['POST', 'GET'])
 def user():
     if validUser() != '':

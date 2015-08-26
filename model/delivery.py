@@ -1,5 +1,6 @@
 from utils.queries import IQueryable
 import datetime
+from model.product import Product
 
 
 class PackageDelivery(IQueryable):
@@ -10,7 +11,7 @@ class PackageDelivery(IQueryable):
         self.packageItems = []
         for product in products:
             self.packageItems.append(PackageItem(id, product.id, product.name,
-                                                 product.quantity))
+                                                 product.quantity, 0))
         self.products = products
         self.owner = owner
         self.customer = customer
@@ -65,14 +66,24 @@ class PackageDelivery(IQueryable):
             item.save(db)
 
     def pullChildren(self, db):
-        childrenFields = "id, package_id, product_id, product_name, quantity"
+        childrenFields = "id, package_id, product_id, product_name, quantity, quantity_filled"
         childTable = "package_item"
         queryFormat = "select {0} from {1} where package_id = {2}"
         query = queryFormat.format(childrenFields, childTable, self.id)
         self.packageItems = []
-        for (id, package_id, product_id, product_name, quantity) in db.executeQuery(query):
+        for (id, package_id, product_id, product_name, quantity, quantity_filled) in db.executeQuery(query):
             self.packageItems.append(PackageItem(package_id, product_id,
-                                                 product_name, quantity, id))
+                                                 product_name, quantity, quantity_filled, id))
+
+    def fillPackage(self, db):
+        products = {}
+        for product in Product.getList(db):
+            products[product.id] = product
+        for item in self.packageItems:
+            if item.quantity_filled <= item.quantity:
+                item.fillPackageItem(products[item.productId])
+                products[item.productId].save(db)
+                item.save(db)
 
     @staticmethod
     def getList(db):
@@ -116,34 +127,49 @@ class PackageDelivery(IQueryable):
 
 
 class PackageItem(IQueryable):
-    def __init__(self, packageId, productId, productName, quantity=0, id=0):
+    def __init__(self, packageId, productId, productName, quantity=0,
+                 quantity_filled=0, id=0):
         self.productId = productId
         self.productName = productName
         self.quantity = quantity
         self.id = id
         self.packageId = packageId
+        self.quantity_filled = quantity_filled
 
     def fields(self):
-        return "package_id, product_id, product_name, quantity"
+        return "package_id, product_id, product_name, quantity, quantity_filled"
 
     def values(self):
-        return "{0},{1},'{2}','{3}'".format(self.packageId, self.productId,
-                                            self.productName, self.quantity)
+        return "{0},{1},'{2}','{3}','{4}'"\
+            .format(self.packageId, self.productId, self.productName,
+                    self.quantity, self.quantity_filled)
 
     def tableName(self):
         return "package_item"
 
     def updateValues(self):
-        return "package_id = {0}, product_id= {1}, product_name= '{2}',"\
-            "quantity= '{3}'".format(self.productId, self.productName,
-                                     self.quantity)
+        return "product_id= '{0}', product_name= '{1}',"\
+            "quantity= '{2}', quantity_filled= '{3}'"\
+            .format(self.productId, self.productName, self.quantity,
+                    self.quantity_filled)
 
     def setValues(self, cursor):
-        for (package_id, product_id, product_name, quantity) in cursor:
+        for (package_id, product_id, product_name, quantity, quantity_filled) in cursor:
             self.productId = product_id
             self.productName = product_name
             self.packageId = package_id
             self.quantity = quantity
+            self.quantity_filled = quantity_filled
+
+    def fillPackageItem(self, product):
+        productId = int(self.productId)
+        if int(self.id) and productId > 0:
+            if product.quantity >= (self.quantity - self.quantity_filled):
+                product.quantity = product.quantity - self.quantity + self.quantity_filled
+                self.quantity_filled = self.quantity
+            else:
+                self.quantity_filled = product.quantity + self.quantity_filled
+                product.quantity = 0
 
     def saveChilds(self, db):
         pass

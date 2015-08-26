@@ -3,7 +3,7 @@ from utils.queries import IQueryable
 
 
 class Product(IQueryable):
-    def __init__(self, name, code, quantity=0, id=0):
+    def __init__(self, name='', code='', quantity=0, id=0):
         self.name = name
         self.code = code
         self.quantity = quantity
@@ -45,4 +45,3 @@ class Product(IQueryable):
         for (id, name, code, quantity) in db.executeQuery(query):
             products.append(Product(name, code, quantity, id))
         return products
-
