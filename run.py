@@ -3,7 +3,7 @@ import datetime
 from flask import request
 from utils.queries import DBManager
 from model.product import Product
-from model.delivery import PackageDelivery, Address, PackageManager
+from model.delivery import PackageDelivery, PackageManager
 from model.employee import User
 from utils.roles import UserManager
 
@@ -127,20 +127,8 @@ def createPackage():
     return redirect("/manage-package/" + str(package.id))
 
 
-@app.route('/update-package/<packageId>', methods=['POST'])
-def updatePackage(packageId):
-    if validUser() != '':
-        return validUser()
-    db = DBManager()
-    package = PackageDelivery([], request.form['addressId'],
-                              request.form['driverId'])
-    package.id = request.form['packageId']
-    package.save(db)
-    return redirect("/manage-package/" + str(package.id))
-
-
-@app.route('/update-driver', methods=['POST'])
-def updateDriver():
+@app.route('/update-package', methods=['POST'])
+def updatePackage():
     if validUser() != '':
         return validUser()
     db = DBManager()

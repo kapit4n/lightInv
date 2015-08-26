@@ -32,7 +32,7 @@ hr.style-seven:before {
 <div class="container">
 {% if session['user_type'] == 'storekeeper' %}
   <div style="height: 100px; ">
-      <form action="{{url_for('updateDriver')}}" method="POST" role="form">
+      <form action="{{url_for('updatePackage')}}" method="POST" role="form">
         <input type="hidden" name="packageId" value="{{package.id}}">
         {{ forms.label_selectName('Driver','driverId', package.driver|string , drivers) }}
         {{ forms.label_selectName('Customer','customerId', package.customer|string , customers) }}
