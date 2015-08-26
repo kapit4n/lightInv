@@ -247,6 +247,15 @@ def fillPackage():
     return redirect('manage-package/' + request.form['packageId'])
 
 
+@app.route('/revert-package', methods=['POST'])
+def revertPackage():
+    db = DBManager()
+    package = PackageDelivery()
+    package.id = request.form['packageId']
+    package.pull(db)
+    package.revertPackage(db)
+    return redirect('manage-package/' + request.form['packageId'])
+
 
 @app.route('/user', methods=['POST', 'GET'])
 def user():

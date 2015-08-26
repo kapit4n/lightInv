@@ -56,14 +56,28 @@ hr.style-seven:before {
           </div>
       </form>
     {% endfor %}
-    <form action="{{url_for('fillPackage')}}" method="POST" role="form" style="display:inline-block;">
-      <input type="hidden" name="packageId" value="{{package.id}}">
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-          <button type="submit" class="btn btn-default">Fill Package</button>
+    {% if not package.isFilled() %}
+       <form action="{{url_for('fillPackage')}}" method="POST" role="form" style="display:inline-block;">
+        <input type="hidden" name="packageId" value="{{package.id}}">
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-default">Fill Package</button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    {% endif%}
+
+    {% if package.isFilled() %}
+       <form action="{{url_for('revertPackage')}}" method="POST" role="form" style="display:inline-block;">
+        <input type="hidden" name="packageId" value="{{package.id}}">
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-default">Revert Package</button>
+          </div>
+        </div>
+      </form>
+    {% endif%}
+   
   <hr class="style-seven">
 {% if session['user_type'] == 'storekeeper' %}
   <a href="/quick?packageId={{package.id}}" >Add Items</a>

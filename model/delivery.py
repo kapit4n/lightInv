@@ -6,7 +6,7 @@ from model.product import Product
 class PackageDelivery(IQueryable):
 
     def __init__(self, products=[], owner=0, customer=0, destiny=0, driver=0,
-                 status='new', id=0):
+                 status='pending', id=0):
         self.created_at = datetime.datetime.now()
         self.packageItems = []
         for product in products:
@@ -84,6 +84,28 @@ class PackageDelivery(IQueryable):
                 item.fillPackageItem(products[item.productId])
                 products[item.productId].save(db)
                 item.save(db)
+
+    def revertPackage(self, db):
+        products = {}
+        for product in Product.getList(db):
+            products[product.id] = product
+        for item in self.packageItems:
+            if item.quantity_filled <= item.quantity:
+                item.revertPackageItem(products[item.productId])
+                products[item.productId].save(db)
+                item.save(db)
+
+    def isFilled(self):
+        for item in self.packageItems:
+            if item.quantity is not item.quantity_filled:
+                return False
+        return True
+
+    def isFilledPartially(self):
+        for item in self.packageItems:
+            if item.quantity_filled > 0:
+                return True
+        return False
 
     @staticmethod
     def getList(db):
@@ -170,6 +192,11 @@ class PackageItem(IQueryable):
             else:
                 self.quantity_filled = product.quantity + self.quantity_filled
                 product.quantity = 0
+
+    def revertPackageItem(self, product):
+        if self.quantity_filled > 0:
+            product.quantity = product.quantity + self.quantity_filled
+            self.quantity_filled = 0
 
     def saveChilds(self, db):
         pass
