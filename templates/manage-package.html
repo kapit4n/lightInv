@@ -11,6 +11,16 @@
 {% block content %}
 
 <div>
+  {% for workflow in workflows %}
+    <form action="{{url_for(workflow.action)}}" method="POST" role="form">
+        <input type="hidden" name="packageId" value="{{package.id}}">
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-default">{{workflow.name}}</button>
+          </div>
+        </div>
+      </form>
+  {% endfor %}
    <table class="table table-striped">
       <caption>Items of the package</caption>
       <thead>
@@ -31,18 +41,20 @@
       </tbody>
     </table>
     {% if session['user_type'] == 'storekeeper' %}
-      <form action="{{url_for('updateDriver')}}" method="POST">
+      <form action="{{url_for('updateDriver')}}" method="POST" role="form">
         <input type="hidden" name="packageId" value="{{package.id}}">
-        {{ forms.selectName('driverId', package.driver|string , drivers) }}
-        <input type="submit" value="Assign Driver">
-      </form>
-      <form action="{{url_for('updateCustomer', packageId=package.id)}}" method="POST">
-        <input type="hidden" name="packageId" value="{{package.id}}">
-        {{ forms.selectName('customerId', package.customer|string , customers) }}
-        <input type="submit" value="Assign Customer">
+        {{ forms.label_selectName('Driver','driverId', package.driver|string , drivers) }}
+        {{ forms.label_selectName('Customer','customerId', package.customer|string , customers) }}
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-default">Save</button>
+          </div>
+        </div>
       </form>
       <a href="/quick?packageId={{package.id}}" >Add Items</a>
     {% endif %}
+
+
     
 </div>
 

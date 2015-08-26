@@ -144,6 +144,7 @@ def updateDriver():
     db = DBManager()
     package = PackageDelivery()
     package.driver = request.form['driverId']
+    package.customer = request.form['customerId']
     package.id = request.form['packageId']
     package.save(db)
     return redirect("/manage-package/" + str(package.id))
@@ -171,10 +172,14 @@ def managePackage(packageId):
     packageAux.pull(db)
     driverList = User.getListByType(db, 'driver')
     customers = User.getListByType(db, 'customer')
+    workflows = UserManager.getWorkflows(session['user_type'],
+                                         packageAux.status)
 
-    return render_template('manage-package.html', title="Package Administrator",
+    return render_template('manage-package.html',
+                           title="Package Administrator",
                            package=packageAux, drivers=driverList,
-                           customers=customers, userMenu=getUserRoles())
+                           customers=customers, userMenu=getUserRoles(),
+                           workflows=workflows)
 
 
 @app.route('/review-package/<packageId>', methods=['GET'])
@@ -187,7 +192,8 @@ def reviewPackage(packageId):
     packageAux.pull(db)
     driverList = Driver.getList(db)
     addressListAux = Address.getList(db)
-    return render_template('manage-package.html', title="Package Administrator",
+    return render_template('manage-package.html',
+                           title="Package Administrator",
                            package=packageAux, drivers=driverList,
                            addressList=addressListAux, userMenu=getUserRoles())
 
@@ -207,7 +213,19 @@ def customer():
     if validUser() != '':
         return validUser()
     db = DBManager()
-    packageList = PackageDelivery.getListByCustomer(db, session['userId'])
+    packageList = PackageDelivery.getListByType(db, session['userId'],
+                                                session['usert_type'])
+    return render_template('customer.html', title="Customer",
+                           packages=packageList, userMenu=getUserRoles())
+
+
+@app.route('/driver', methods=['GET'])
+def driver():
+    if validUser() != '':
+        return validUser()
+    db = DBManager()
+    packageList = PackageDelivery.getListByType(db, session['userId'],
+                                                session['user_type'])
     return render_template('customer.html', title="Customer",
                            packages=packageList, userMenu=getUserRoles())
 
@@ -215,6 +233,11 @@ def customer():
 @app.route('/save-package', methods=['POST'])
 def savePackage():
     pass
+
+
+@app.route('/start', methods=['POST'])
+def start():
+    return ''
 
 
 @app.route('/user', methods=['POST', 'GET'])
@@ -236,7 +259,7 @@ def user():
 
 def validUser():
     if 'user' in session:
-        if session['user'] != None:
+        if session['user'] is not None:
             return ''
     return redirect(url_for('login'))
 
@@ -246,4 +269,3 @@ def getUserRoles():
 
 if __name__ == '__main__':
     app.run(debug=True)
-

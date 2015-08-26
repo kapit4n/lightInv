@@ -101,6 +101,19 @@ class PackageDelivery(IQueryable):
                                                driver_id, status, id))
         return packageList
 
+    @staticmethod
+    def getListByType(db, ownerId, user_type):
+        usertypeDict = {'customer': 'customer', 'storekeeper': 'owner',
+                        'driver': 'driver_id'}
+        query = "select id, created_at, owner, customer, destiny, driver_id,"\
+            " status from package where {0}='{1}'"\
+            .format(usertypeDict[user_type], ownerId)
+        packageList = []
+        for (id, created_at, owner, customer, destiny, driver_id, status) in db.executeQuery(query):
+            packageList.append(PackageDelivery([], owner, customer, destiny,
+                                               driver_id, status, id))
+        return packageList
+
 
 class PackageItem(IQueryable):
     def __init__(self, packageId, productId, productName, quantity=0, id=0):

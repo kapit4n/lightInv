@@ -12,6 +12,29 @@
 {%- endmacro %}
 
 
+{%- macro label_selectName(label, name, value, options) -%}
+  <div class="form-group">
+    <label class="control-label col-sm-3" >{{label}}</label>
+    <div class="col-sm-9">
+      <select class="form-control"  name="{{ name }}">
+        {%- if value == '0' %}
+        <option value="0" selected> None</option>
+        {%- else %}
+            <option value="0"> None </option>
+        {%- endif %}
+
+        {%- for option in options %}
+            {%- if option.id|string == value %}
+                <option value="{{option.id}}" selected> {{option.name}}</option>
+            {%- else %}
+                <option value="{{option.id}}"> {{option.name}} </option>
+            {%- endif %}
+        {%- endfor %}
+      </select>
+    </div>
+  </div>    
+{%- endmacro %}
+
 {%- macro label_select(label,name, value, options) -%}
   <div class="form-group">
     <label class="control-label col-sm-3" >{{label}}</label>
