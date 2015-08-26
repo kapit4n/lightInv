@@ -152,46 +152,6 @@ class PackageItem(IQueryable):
         pass
 
 
-class Address(IQueryable):
-    def __init__(self, city, street, number, id=0):
-        self.city = city
-        self.street = street
-        self.number = number
-        self.id = id
-        self.name = "{0} {1} {2}".format(self.city, self.street, self.number)
-
-    def fields(self):
-        return "city, street, number"
-
-    def values(self):
-        return "'{0}', '{1}', {2}".format(self.city, self.street, self.number)
-
-    def tableName(self):
-        return "address"
-
-    def updateValues(self):
-        return "city= '{0}', street= '{1}', number= {2}"\
-            .format(self.city, self.street, self.number)
-
-    def setValues(self, cursor):
-        for (name) in cursor:
-                self.name = name
-
-    def saveChilds(self, db):
-        pass
-
-    def pullChildren(self, db):
-        pass
-
-    @staticmethod
-    def getList(db):
-        query = "select id, city, street, number from address"
-        addressList = []
-        for (id, city, street, number) in db.executeQuery(query):
-            addressList.append(Address(city, street, number, id))
-        return addressList
-
-
 class Car(IQueryable):
     def __init__(self, model, capacity, type, id=0):
         self.model = model

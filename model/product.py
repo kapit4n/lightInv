@@ -45,3 +45,4 @@ class Product(IQueryable):
         for (id, name, code, quantity) in db.executeQuery(query):
             products.append(Product(name, code, quantity, id))
         return products
+
