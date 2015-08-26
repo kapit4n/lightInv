@@ -23,20 +23,6 @@ class UserManager:
 
         return initialPage[userType]
 
-    @staticmethod
-    def getWorkflows(userType, packageStatus):
-        customerNew = [Workflow('start', 'Start')]
-        driverNew = [Workflow('start', 'Start')]
-        storekeeperNew = [Workflow('start', 'Start')]
-
-        customer = {'new': customerNew}
-        driver = {'new': driverNew}
-        storekeeper = {'new': storekeeperNew}
-
-        workflows = {'customer': customer, 'driver': driver,
-                     'storekeeper': storekeeper}
-        return (workflows[userType])[packageStatus]
-
 
 class MenuItem:
     def __init__(self, dir, name):
@@ -44,7 +30,3 @@ class MenuItem:
         self.dir = dir
 
 
-class Workflow:
-    def __init__(self, action, name):
-        self.name = name
-        self.action = action

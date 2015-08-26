@@ -10,7 +10,7 @@
 {% endblock %}
 {% block content %}
 
-<form action="{{url_for('user')}}" method="post" class="form-horizontal"  role="form">
+<form action="{{url_for('user')}}" method="post" class="form-horizontal"  role="form" >
   {{ forms.labelAndInput('Display Name', 'display_name') }}
   {{ forms.labelAndInput('Email', 'email') }}
   {{ forms.labelAndInput('Login', 'login') }}

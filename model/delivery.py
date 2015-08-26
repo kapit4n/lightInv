@@ -221,3 +221,38 @@ class Car(IQueryable):
 
     def pullChildren(self, db):
         pass
+
+
+class PackageManager:
+    statusNext = {'start': 'shipping'}
+
+    @staticmethod
+    def processWorkflow(package, status):
+        return PackageManager.statusNext[status]
+
+    @staticmethod
+    def getWorkflows(userType, packageStatus):
+        cNew = [Workflow('start', 'Start'), Workflow('start', 'Abandon')]
+        dNew = [Workflow('start', 'Start'), Workflow('start', 'Abandon')]
+        sNew = [Workflow('start', 'Start'), Workflow('start', 'Abandon')]
+
+        cPackaging = [Workflow('start', 'Finish'),
+                      Workflow('start', 'Abandon')]
+        dPackaging = [Workflow('start', 'Finish'),
+                      Workflow('start', 'Abandon')]
+        skPackaging = [Workflow('start', 'Finish'),
+                       Workflow('start', 'Abandon')]
+
+        customer = {'new': cNew, 'shipping': cPackaging}
+        driver = {'new': dNew, 'shipping': dPackaging}
+        storekeeper = {'new': sNew, 'shipping': skPackaging}
+
+        workflows = {'customer': customer, 'driver': driver,
+                     'storekeeper': storekeeper}
+        return (workflows[userType])[packageStatus]
+
+
+class Workflow:
+    def __init__(self, action, name):
+        self.name = name
+        self.action = action

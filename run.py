@@ -3,7 +3,7 @@ import datetime
 from flask import request
 from utils.queries import DBManager
 from model.product import Product
-from model.delivery import PackageDelivery, Address
+from model.delivery import PackageDelivery, Address, PackageManager
 from model.employee import User, Driver
 from utils.roles import UserManager
 
@@ -72,6 +72,8 @@ def logout():
 
 @app.route('/quick', methods=['POST', 'GET'])
 def quick():
+    print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+    print(request.path)
     if validUser() != '':
         return validUser()
     db = DBManager()
@@ -172,7 +174,7 @@ def managePackage(packageId):
     packageAux.pull(db)
     driverList = User.getListByType(db, 'driver')
     customers = User.getListByType(db, 'customer')
-    workflows = UserManager.getWorkflows(session['user_type'],
+    workflows = PackageManager.getWorkflows(session['user_type'],
                                          packageAux.status)
 
     return render_template('manage-package.html',
@@ -237,7 +239,15 @@ def savePackage():
 
 @app.route('/start', methods=['POST'])
 def start():
-    return ''
+    db = DBManager()
+    package = PackageDelivery()
+    package.id = request.form['packageId']
+    package.pull(db)
+    nextStatus = PackageManager.processWorkflow(package,
+                                                request.form['action'])
+    package.status = nextStatus
+    package.save(db)
+    return redirect('manage-package/' + request.form['packageId'])
 
 
 @app.route('/user', methods=['POST', 'GET'])
