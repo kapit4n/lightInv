@@ -224,7 +224,11 @@ class Car(IQueryable):
 
 
 class PackageManager:
-    statusNext = {'start': 'shipping'}
+    statusNext = {'package': 'packaging', 'finishPackage': 'packaged',
+                  'finish': 'closed', 'accept': 'accepted',
+                  'abandon': 'abandoned', 'send': 'shipping',
+                  'deliver': 'dispatched', 'pending': 'pending',
+                  'reject': 'rejected', 'putOnHold': 'held'}
 
     @staticmethod
     def processWorkflow(package, status):
@@ -232,22 +236,34 @@ class PackageManager:
 
     @staticmethod
     def getWorkflows(userType, packageStatus):
-        cNew = [Workflow('start', 'Start'), Workflow('start', 'Abandon')]
-        dNew = [Workflow('start', 'Start'), Workflow('start', 'Abandon')]
-        sNew = [Workflow('start', 'Start'), Workflow('start', 'Abandon')]
+        wfPackage = Workflow('package', 'Package')
+        wfFinishPackage = Workflow('finishPackage', 'Finish Packaging')
+        wfPutOnHold = Workflow('putOnHold', 'Put On Hold')
+        wfShipping = Workflow('send', 'Send Package')
+        wfDeliver = Workflow('deliver', 'Deliver')
+        wfAccept = Workflow('accept', 'Accept')
+        wfReject = Workflow('reject', 'Reject')
+        wfPending = Workflow('pending', 'Pending')
+        wfAbandon = Workflow('abandon', 'Abandon')
+        wfFinish = Workflow('finish', 'Finish')
 
-        cPackaging = [Workflow('start', 'Finish'),
-                      Workflow('start', 'Abandon')]
-        dPackaging = [Workflow('start', 'Finish'),
-                      Workflow('start', 'Abandon')]
-        skPackaging = [Workflow('start', 'Finish'),
-                       Workflow('start', 'Abandon')]
+        sPending = [wfPutOnHold, wfPackage]
+        sPackaging = [wfFinishPackage, wfAbandon]
+        sPackaged = [wfShipping, wfAbandon]
+        sShipping = [wfDeliver]
+        sDelivered = [wfAccept, wfReject]
+        sReject = [wfAbandon, wfPending]
+        sAccepted = [wfFinish]
+        sAbandoned = [wfFinish]
+        sOnHold = [wfPending]
 
-        customer = {'new': cNew, 'shipping': cPackaging}
-        driver = {'new': dNew, 'shipping': dPackaging}
-        storekeeper = {'new': sNew, 'shipping': skPackaging}
+        storekeeper = {'pending': sPending, 'packaging': sPackaging,
+                       'packaged': sPackaged, 'shipping': sShipping,
+                       'dispatched': sDelivered, 'rejected': sReject,
+                       'accepted': sAccepted, 'closed': [],
+                       'abandoned': sAbandoned, 'held': sOnHold}
 
-        workflows = {'customer': customer, 'driver': driver,
+        workflows = {'customer': storekeeper, 'driver': storekeeper,
                      'storekeeper': storekeeper}
         return (workflows[userType])[packageStatus]
 

@@ -48,7 +48,7 @@ hr.style-seven:before { /* Not really supposed to work, but does */
 {% endif %}
 
     {% for workflow in workflows %}
-      <form action="{{url_for(workflow.action)}}" method="POST" role="form" style="display:inline-block;">
+      <form action="{{url_for('start')}}" method="POST" role="form" style="display:inline-block;">
           <input type="hidden" name="packageId" value="{{package.id}}">
           <input type="hidden" name="action" value="{{workflow.action}}">
           <div class="form-group">
