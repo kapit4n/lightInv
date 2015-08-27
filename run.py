@@ -263,9 +263,14 @@ def user():
         return validUser()
     db = DBManager()
     if request.method == 'POST':
+        userId = 0
+        if 'userId' in request.form.keys():
+            userId = int(request.form['userId'])
         user = User(request.form['display_name'], request.form['email'],
                     request.form['login'], request.form['password'],
                     request.form['user_type'])
+        if userId > 0:
+            user.id = userId
         user.save(db)
         return redirect("/user")
     else:
