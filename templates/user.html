@@ -15,13 +15,31 @@
 
 <script>
 
+function submitIt() {
+  $.post('/user', $('#target').serialize(), function(result){
+    $('#orderModal').modal('toggle');
+    $('.modal-backdrop').remove();
+    tr = $('#tr-userId-'+result.id)[0];
+    updateValue(tr, 'userName', result.display_name);
+    updateValue(tr, 'userEmail', result.email);
+    updateValue(tr, 'userLogin', result.login);
+    updateValue(tr, 'userPassword', result.password);
+    updateValue(tr, 'userType', result.user_type);
+    console.log(tdName);
+  });
+}
+
+function updateValue(tr, className, value) {
+  tdName = $(tr).find('.' + className)[0];
+  $(tdName).text(value);
+}
+
 $(document).ready(function(){
 
 $('#orderModal').modal({
         keyboard: true,
         backdrop: "static",
         show:false,
-
 }).on('show.bs.modal', function(){ //subscribe to show method
       var getIdFromRow = $(event.target).closest('tr').data('id'); //get the id from tr
       trQuery = $($(event.target).parent('tr'));
@@ -39,10 +57,7 @@ $('#orderModal').modal({
                 {name: 'password', label: 'Password', value: userPassword, type: 'input', readonly: false},
                 {name: 'user_type', label: 'Type', value: userType, type: 'input', readonly: false}]
 
-      console.log(getForm(getFormInputs(inputs)));
-
       $(this).find('#orderDetails').html($(getForm(getFormInputs(inputs))));
-
       
     //make your ajax call populate items or what even you need
     
@@ -52,7 +67,7 @@ $('#orderModal').modal({
     }
 
     function getForm(contain){
-      return '<div class="container" ><form id="target" action="/user" method="post" class="form-horizontal" role="form">'+ contain + '</form></div>';
+      return '<div class="container" ><form id="target" class="form-horizontal" role="form">'+ contain + '</form>' + getSubmitInput() +'</div>';
     }
 
     function getFormInput(id, value, label, readonly) {
@@ -69,21 +84,18 @@ $('#orderModal').modal({
       inputs.forEach( function(value) {
         res += getFormInput(value.name, value.value, value.label, value.readonly);
       });
-      res += getSubmitInput()
       return res;
     }
 
     function getSubmitInput() {
       return '<div class="form-group"> '+
       '  <div class="col-sm-offset-3 col-sm-9">'+
-      '    <button type="submit" class="btn btn-default">Update</button>'+
+      '    <button onclick="submitIt()" type="submit" class="btn btn-default">Update</button>'+
       '  </div>'+
       '</div>';
     }
-});
 
-$( "#target" ).submit(function( event ) {
-  console.log('This is an update');
+    
 });
 
 });
@@ -118,7 +130,7 @@ $( "#target" ).submit(function( event ) {
     </thead>
     <tbody>
     {% for user in users %}
-      <tr data-toggle="modal" data-id="{{user.id}}" data-target="#orderModal">
+      <tr data-toggle="modal" data-id="{{user.id}}" id="tr-userId-{{user.id}}" data-target="#orderModal">
         <td><input type="checkbox" class="checkthis" /></td>
         <td class="userId">{{user.id}}</td>
         <td class="userName">{{user.name}}</td>

@@ -1,5 +1,6 @@
-from flask import Flask, session, render_template, url_for, redirect
+from flask import Flask, session, render_template, url_for, redirect, jsonify
 import datetime
+import json
 from flask import request
 from utils.queries import DBManager
 from model.product import Product
@@ -72,8 +73,6 @@ def logout():
 
 @app.route('/quick', methods=['POST', 'GET'])
 def quick():
-    print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-    print(request.path)
     if validUser() != '':
         return validUser()
     db = DBManager()
@@ -272,7 +271,7 @@ def user():
         if userId > 0:
             user.id = userId
         user.save(db)
-        return redirect("/user")
+        return jsonify(user.__dict__)
     else:
         users = User.getList(db)
         return render_template('user.html', title="Users", users=users,
