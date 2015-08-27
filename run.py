@@ -24,7 +24,8 @@ app.jinja_env.filters['datetimefilter'] = datetimefilter
 def template_test():
     return render_template('template.html', my_string="Wheeeee!",
                            my_list=[0, 1, 2, 3, 4, 5], title="Index",
-                           current_time=datetime.datetime.now())
+                           current_time=datetime.datetime.now(),
+                           userMenu=getUserRoles())
 
 
 @app.route('/product', methods=['POST', 'GET'])
@@ -164,11 +165,14 @@ def managePackage(packageId):
     workflows = PackageManager.getWorkflows(session['user_type'],
                                             packageAux.status)
 
+    imageName = PackageManager.getImageByStatus(packageAux.status)
+    imageState = url_for('static', filename='images/' + imageName)
+
     return render_template('manage-package.html',
                            title="Package",
                            package=packageAux, drivers=driverList,
                            customers=customers, userMenu=getUserRoles(),
-                           workflows=workflows)
+                           workflows=workflows, imageState=imageState)
 
 
 @app.route('/review-package/<packageId>', methods=['GET'])

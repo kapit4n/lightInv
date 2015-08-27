@@ -81,7 +81,7 @@ class User(Employee):
     @staticmethod
     def getList(db):
         query = "select id, display_name, email, login, password, user_type"\
-            " from user"
+            " from user where user_type != 'admin'"
         users = []
         qResult = db.executeQuery(query)
         for (id, display_name, email, login, password, user_type) in qResult:

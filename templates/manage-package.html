@@ -29,22 +29,32 @@ hr.style-seven:before {
     border-radius: 20px;
 }
 </style>
+
+
 <div class="container">
-{% if session['user_type'] == 'storekeeper' %}
-  <div style="height: 100px; ">
+
+{% if session['user_type'] == 'storekeeper' or session['user_type'] == 'admin' %}
+  <div class="col-xs-8 col-md-8 col-lg-7" style="background: transparent;">
       <form action="{{url_for('updatePackage')}}" method="POST" role="form">
         <input type="hidden" name="packageId" value="{{package.id}}">
         {{ forms.label_selectName('Driver','driverId', package.driver|string , drivers) }}
         {{ forms.label_selectName('Customer','customerId', package.customer|string , customers) }}
         <div class="form-group">
-          <div class="col-sm-offset-10 col-sm-1" style="padding-left: 35px;">
-            <button type="submit" class="btn btn-default">Save</button>
+          <div class="col-sm-2 col-sm-offset-9 col-md-2 col-md-offset-9 col-lg-2 col-lg-offset-9" style="padding-left: 1px;">
+
           </div>
         </div>
       </form>
   </div>
-  <hr class="style-seven">
 {% endif %}
+<div class="col-xs-3 col-md-3  col-lg-3" style=" height: 120px; background-image: url('{{imageState}}'); background-size: cover;   border-radius: 25px;">
+</div>
+
+<div class="col-xs-12 col-md-12 col-lg-12"  style="background: transparent;">
+    
+    <div class="col-sm-3 col-lg-3 col-md-3 col-xs-3">
+        <button type="submit" class="btn btn-default" >Update</button>
+    </div>
     {% for workflow in workflows %}
       <form action="{{url_for('start')}}" method="POST" role="form" style="display:inline-block;">
           <input type="hidden" name="packageId" value="{{package.id}}">
@@ -67,7 +77,7 @@ hr.style-seven:before {
       </form>
     {% endif%}
 
-    {% if package.isFilled() %}
+    {% if package.isFilledPartially() %}
        <form action="{{url_for('revertPackage')}}" method="POST" role="form" style="display:inline-block;">
         <input type="hidden" name="packageId" value="{{package.id}}">
         <div class="form-group">
@@ -77,12 +87,18 @@ hr.style-seven:before {
         </div>
       </form>
     {% endif%}
-   
-  <hr class="style-seven">
-{% if session['user_type'] == 'storekeeper' %}
+    
+</div>
+
+{% if session['user_type'] == 'storekeeper'  or session['user_type'] == 'admin'%}
+<div class="col-xs-8 col-md- col-lg-7">
   <a href="/quick?packageId={{package.id}}" >Add Items</a>
+</div>
 {% endif %}
-   <table class="table table-striped">
+
+
+
+   <table class="table table-striped col-xs-12 col-md-12 col-lg-12">
       <caption></caption>
       <thead>
         <tr>

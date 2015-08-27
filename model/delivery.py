@@ -289,8 +289,17 @@ class PackageManager:
                   'abandoned': [], 'held': []}
 
         workflows = {'customer': customer, 'driver': driver,
-                     'storekeeper': storekeeper}
+                     'storekeeper': storekeeper, 'admin': storekeeper}
         return (workflows[userType])[packageStatus]
+
+    @staticmethod
+    def getImageByStatus(status):
+        driver = {'pending': 'pending.png', 'packaging': 'packaging.png',
+                  'packaged': 'packaged.png', 'shipping': 'shipping.png',
+                  'dispatched': 'dispatched.png', 'rejected': 'rejected.png',
+                  'accepted': 'accepted.png', 'closed': 'closed.png',
+                  'abandoned': 'abandoned.png', 'held': 'held.png'}
+        return driver[status]
 
 
 class Workflow:

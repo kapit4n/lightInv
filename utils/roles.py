@@ -7,9 +7,13 @@ class UserManager:
                        MenuItem('product', 'Product'),
                        MenuItem('user', 'Users'),
                        MenuItem('package', 'Package')]
+        admin = [MenuItem('quick', 'Quick Package'),
+                 MenuItem('product', 'Product'),
+                 MenuItem('user', 'Users'),
+                 MenuItem('package', 'Package')]
         driver = [MenuItem('driver', 'HOME')]
         userMenus = {'customer': customer, 'storekeeper': storekeeper,
-                     'driver': driver}
+                     'driver': driver, 'admin': admin}
 
         return userMenus[userType]
 
@@ -18,8 +22,9 @@ class UserManager:
         customer = '/customer'
         storekeeper = '/quick'
         driver = '/driver'
+        admin = '/'
         initialPage = {'customer': customer, 'storekeeper': storekeeper,
-                       'driver': driver}
+                       'driver': driver, 'admin': admin}
 
         return initialPage[userType]
 
