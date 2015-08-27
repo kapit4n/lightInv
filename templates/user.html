@@ -3,12 +3,35 @@
 {% block title %}{{title}}{% endblock %}
 {% block head %}
   {{ super() }}
+
 {% endblock %}
 {% block page %}{{title}}{% endblock %}
 {% block heading %}
   {{ super() }}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
 {% endblock %}
 {% block content %}
+
+<script>
+
+$(document).ready(function(){
+
+$('#orderModal').modal({
+        keyboard: true,
+        backdrop: "static",
+        show:false,
+
+}).on('show.bs.modal', function(){ //subscribe to show method
+      console.log('This is updated');
+      var getIdFromRow = $(event.target).closest('tr').data('id'); //get the id from tr
+      console.log(getIdFromRow);
+    //make your ajax call populate items or what even you need
+    $(this).find('#orderDetails').html($('<b> Order Id selected: ' + getIdFromRow  + '</b>'));
+});
+
+});
+</script>
 
 <form action="{{url_for('user')}}" method="post" class="form-horizontal"  role="form" >
   {{ forms.labelAndInput('Display Name', 'display_name') }}
@@ -28,27 +51,49 @@
     <caption>User List</caption>
     <thead>
       <tr>
+        <th><input type="checkbox" id="checkall" /></th>
         <th>Driver Id</th>
         <th>Display name</th>
         <th>Email</th>
         <th>Login</th>
         <th>Password</th>
         <th>type</th>
+        <th>Edit</th>
+        <th>Delete</th>
       </tr>
     </thead>
     <tbody>
     {% for user in users %}
-      <tr>
+      <tr data-toggle="modal" data-id="{{user.id}}" data-target="#orderModal">
+        <td><input type="checkbox" class="checkthis" /></td>
         <td>{{user.id}}</td>
         <td>{{user.name}}</td>
         <td>{{user.email}}</td>
         <td>{{user.login}}</td>
         <td>{{user.password}}</td>
         <td>{{user.user_type}}</td>
+        <td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
+        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
       </tr>
     {% endfor %}
     </tbody>
   </table>
+</div>
+<div class="container">
+  <div id="orderModal" class="modal" role="dialog" style="background: red; height: 300px; width: 300px;">
+    <div class="modal-header" >
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+      <h3>Order</h3>
+    </div>
+    <div id="orderDetails"class="modal-body" style="background: red; height: 100px; width: 100px;">
+      This is the order details
+    </div>
+
+    <div id="orderItems" class="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+  </div>  
 </div>
 
   {% block footer %}

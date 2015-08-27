@@ -7,7 +7,7 @@ from model.delivery import PackageDelivery, PackageManager
 from model.employee import User
 from utils.roles import UserManager
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.secret_key = 'mySecretKey'
 
 
