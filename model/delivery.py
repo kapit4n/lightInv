@@ -6,7 +6,7 @@ from model.product import Product
 class PackageDelivery(IQueryable):
 
     def __init__(self, products=[], owner=0, customer=0, destiny=0, driver=0,
-                 status='pending', id=0):
+                 status='', id=0):
         self.created_at = datetime.datetime.now()
         self.packageItems = []
         for product in products:
@@ -26,6 +26,8 @@ class PackageDelivery(IQueryable):
         return "created_at, owner, customer, destiny, driver_id, status "
 
     def values(self):
+        if self.status == '':
+            self.status = 'pending'
         return "'{0}', '{1}', '{2}', '{3}', '{4}', '{5}'"\
             .format(self.created_at, self.owner, self.customer, self.destiny,
                     self.driver, self.status)
@@ -43,7 +45,7 @@ class PackageDelivery(IQueryable):
             updateSt.append("destiny= '{0}'".format(self.destiny))
         if int(self.driver) > 0:
             updateSt.append("driver_id= '{0}'".format(self.driver))
-        if self.status != 'new':
+        if self.status != '':
             updateSt.append("status= '{0}'".format(self.status))
 
         return ','.join(updateSt)
