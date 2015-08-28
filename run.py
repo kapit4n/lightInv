@@ -165,6 +165,15 @@ def managePackage(packageId):
     workflows = PackageManager.getWorkflows(session['user_type'],
                                             packageAux.status)
 
+    if packageAux.status == 'packaging' and not packageAux.isFilled():
+        toDelete = None
+        for wf in workflows:
+            if wf.action == 'finishPackage':
+                toDelete = wf
+        if toDelete is not None:
+            workflows.remove(toDelete)
+
+
     imageName = PackageManager.getImageByStatus(packageAux.status)
     imageState = url_for('static', filename='images/' + imageName)
 

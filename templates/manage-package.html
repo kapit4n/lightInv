@@ -7,7 +7,6 @@
 
 function updatePackage(){
    $.post('/update-package', $('#package-data').serialize(), function(result){
-    console.log(result);
   });
 }
 
@@ -44,7 +43,7 @@ function updatePackage(){
           </div>
       </form>
     {% endfor %}
-    {% if not package.isFilled() %}
+    {% if not package.isFilled() and package.status == 'packaging' %}
        <form action="{{url_for('fillPackage')}}" method="POST" role="form" style="display:inline-block;">
         <input type="hidden" name="packageId" value="{{package.id}}">
         <div class="form-group">
@@ -55,7 +54,7 @@ function updatePackage(){
       </form>
     {% endif%}
 
-    {% if package.isFilledPartially() %}
+    {% if package.isFilledPartially() and package.status == 'packaging' %}
        <form action="{{url_for('revertPackage')}}" method="POST" role="form" style="display:inline-block;">
         <input type="hidden" name="packageId" value="{{package.id}}">
         <div class="form-group">
@@ -66,9 +65,8 @@ function updatePackage(){
       </form>
     {% endif%}
 
-
-{% if session['user_type'] == 'storekeeper'  or session['user_type'] == 'admin'%}
-<div class="col-xs-8 col-md- col-lg-7">
+{% if (session['user_type'] == 'storekeeper'  or session['user_type'] == 'admin') and package.status == 'pending' %}
+<div class="col-xs-2 col-xs-offset-10 col-md-2 col-md-offset-10 col-lg-2 col-lg-offset-10 col-sm-2 col-sm-offset-10">
   <a href="/quick?packageId={{package.id}}" >Add Items</a>
 </div>
 {% endif %}
