@@ -3,57 +3,35 @@
 {% block title %}{{title}}{% endblock %}
 {% block head %}
   {{ super() }}
+<script>
+
+function updatePackage(){
+   $.post('/update-package', $('#package-data').serialize(), function(result){
+    console.log(result);
+  });
+}
+
+</script>
 {% endblock %}
 {% block page %}{{title}}{% endblock %}
 {% block heading %}
   {{ super() }}
 {% endblock %}
 {% block content %}
-<style>
-
-hr.style-seven {
-    height: 5px;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px 0 0 0;
-    border-radius: 20px;
-}
-hr.style-seven:before {
-    display: block;
-    content: "";
-    height: 5px;
-    margin-top: -6px;
-    border-style: solid;
-    border-color: black;
-    border-width: 0 0 1px 0;
-    border-radius: 20px;
-}
-</style>
-
 
 <div class="container">
 
 {% if session['user_type'] == 'storekeeper' or session['user_type'] == 'admin' %}
-  <div class="col-xs-8 col-md-8 col-lg-7" style="background: transparent;">
-      <form action="{{url_for('updatePackage')}}" method="POST" role="form">
+      <form id="package-data" class="col-xs-8 col-md-8 col-lg-8" action="{{url_for('updatePackage')}}" method="POST" role="form">
         <input type="hidden" name="packageId" value="{{package.id}}">
         {{ forms.label_selectName('Driver','driverId', package.driver|string , drivers) }}
         {{ forms.label_selectName('Customer','customerId', package.customer|string , customers) }}
-        <div class="form-group">
-          <div class="col-sm-2 col-sm-offset-9 col-md-2 col-md-offset-9 col-lg-2 col-lg-offset-9" style="padding-left: 1px;">
-
-          </div>
-        </div>
       </form>
-  </div>
 {% endif %}
 <div class="col-xs-3 col-md-3  col-lg-3" style=" height: 120px; background-image: url('{{imageState}}'); background-size: cover;   border-radius: 25px;">
 </div>
-
-<div class="col-xs-12 col-md-12 col-lg-12"  style="background: transparent;">
-    
     <div class="col-sm-3 col-lg-3 col-md-3 col-xs-3">
-        <button type="submit" class="btn btn-default" >Update</button>
+        <button type="submit" class="btn btn-default" onclick="updatePackage()" >Update</button>
     </div>
     {% for workflow in workflows %}
       <form action="{{url_for('start')}}" method="POST" role="form" style="display:inline-block;">
@@ -87,16 +65,13 @@ hr.style-seven:before {
         </div>
       </form>
     {% endif%}
-    
-</div>
+
 
 {% if session['user_type'] == 'storekeeper'  or session['user_type'] == 'admin'%}
 <div class="col-xs-8 col-md- col-lg-7">
   <a href="/quick?packageId={{package.id}}" >Add Items</a>
 </div>
 {% endif %}
-
-
 
    <table class="table table-striped col-xs-12 col-md-12 col-lg-12">
       <caption></caption>

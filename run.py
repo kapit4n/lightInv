@@ -137,7 +137,7 @@ def updatePackage():
     package.customer = request.form['customerId']
     package.id = request.form['packageId']
     package.save(db)
-    return redirect("/manage-package/" + str(package.id))
+    return jsonify(package.__dict__)
 
 
 @app.route('/update-customer', methods=['POST'])
