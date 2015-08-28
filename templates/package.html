@@ -24,6 +24,7 @@
       <tr>
         <td>{{package.id}}</td>
         <td>{{package.name}}</td>
+        <td><img height="30px" src="{{url_for('static', filename='images/' + package.status + '.png')}}" alt=""></td>
         <td><a href="manage-package/{{package.id}}" >{{package.id}}</a></td>
       </tr>
     {% endfor %}
