@@ -111,3 +111,8 @@ class User(Employee):
             user.id = id
             return user
         return None
+
+    @staticmethod
+    def deleteUser(db, id):
+        query = "delete from user where id='{0}'".format(id)
+        db.deleteQuery(query)

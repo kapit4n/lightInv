@@ -291,6 +291,12 @@ def user():
                                userMenu=getUserRoles())
 
 
+@app.route('/user/<int:id>', methods=['DELETE'])
+def delete_user(id):
+    User.deleteUser(DBManager(), id)
+    return 'Successful'
+
+
 def validUser():
     if 'user' in session:
         if session['user'] is not None:

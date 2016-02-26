@@ -22,6 +22,10 @@ class DBManager:
         self.cursor.execute(query)
         return self.cursor
 
+    def deleteQuery(self, query):
+        self.cursor.execute(query)
+        self.conn.commit()
+
 
 class IQueryable(object):
 
