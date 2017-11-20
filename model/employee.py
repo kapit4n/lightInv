@@ -8,9 +8,9 @@ class Employee(IQueryable):
     def __init__(self, name):
         self.name = name
 
-    @abc.abstractmethod
-    def create(self, name):
-        pass
+    # @abc.abstractmethod
+    # def create(self, name):
+    #     pass
 
     def fields(self):
         return 'driver'
