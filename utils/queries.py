@@ -4,7 +4,7 @@ import mysql.connector
 
 class DBManager:
     def __init__(self):
-        self.conn = mysql.connector.connect(user='root', host='localhost',
+        self.conn = mysql.connector.connect(user='root', password='root', host='localhost',
                                             database='coke')
         self.cursor = self.conn.cursor()
 
