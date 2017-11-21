@@ -1,17 +1,13 @@
 {% import 'forms.html' as forms %} {% extends "layout.html" %} {% block title %}{{title}}{% endblock %} {% block head %} {{ super() }} {% endblock %} {% block page %}{{title}}{% endblock %} {% block heading %} {{ super() }}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-<script>
-.modal-backdrop {
-  background-color: red;
-}
 </script>
 {% endblock %} {% block content %}
 <script>
 function submitIt() {
     $.post('/user', $('#target').serialize(), function(result) {
-        //$('#userEditModal').modal('show');
-        //$('.modal-backdrop').remove();
+        $('#userEditModal').modal('show');
+        $('.modal-backdrop').remove();
         tr = $('#tr-userId-' + result.id)[0];
         updateValue(tr, 'userName', result.display_name);
         updateValue(tr, 'userEmail', result.email);
