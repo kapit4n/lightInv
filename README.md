@@ -11,7 +11,11 @@ Light wait to handle a store.
 ### How do I get set up? ###
 
 * pip install flask
+* create coke db
+* install coke.sql to coke db
 * python run.py
+* go to [localhost/login](http://localhost/login)
+* user: luis password: password
 
 ### Who do I talk to? ###
 

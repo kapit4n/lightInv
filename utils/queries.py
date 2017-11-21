@@ -9,6 +9,7 @@ class DBManager:
         self.cursor = self.conn.cursor()
 
     def executeInsert(self, query):
+        print query
         self.cursor.execute(query)
         self.conn.commit()
         return self.cursor.lastrowid

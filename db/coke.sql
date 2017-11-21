@@ -95,33 +95,35 @@ INSERT INTO `driver` (`id`, `name`) VALUES
 -- Table structure for table `package`
 --
 
+DROP TABLE package;
+
 CREATE TABLE IF NOT EXISTS `package` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `shiping_date` date NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `product_quantity` int(11) NOT NULL,
+  `product_quantity` int(11) NOT NULL DEFAULT 0,
   `driver_id` int(11) NOT NULL,
   `destiny` int(11) NOT NULL,
   `status` enum('new','shipping','dispatched','verified','closed','pending') NOT NULL DEFAULT 'new',
-  `storekeeper` int(11) NOT NULL,
-  `customer` int(11) NOT NULL,
-  `owner` int(11) NOT NULL
+  `storekeeper` int(11) NOT NULL DEFAULT 0,
+  `customer` int(11) NOT NULL DEFAULT 0,
+  `owner` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `package`
 --
 
-INSERT INTO `package` (`id`, `created_at`, `shiping_date`, `product_id`, `product_quantity`, `driver_id`, `destiny`, `status`, `storekeeper`, `customer`, `owner`) VALUES
-(24, '2015-08-21 21:42:56', '0000-00-00', 0, 0, 0, 0, 'new', 0, 0, 0),
-(25, '2015-08-21 21:48:19', '0000-00-00', 0, 0, 0, 0, 'new', 0, 0, 0),
-(26, '2015-08-22 00:38:58', '0000-00-00', 0, 0, 0, 0, 'new', 0, 0, 0),
-(27, '2015-08-22 00:39:07', '0000-00-00', 0, 0, 0, 0, 'new', 0, 0, 0),
-(28, '2015-08-22 00:40:01', '0000-00-00', 0, 0, 0, 0, 'new', 0, 0, 0),
-(29, '2015-08-22 00:40:43', '0000-00-00', 0, 0, 0, 0, 'new', 0, 0, 0),
-(30, '2015-08-24 14:25:21', '0000-00-00', 0, 0, 0, 0, 'new', 0, 0, 0),
-(31, '2015-08-24 20:03:17', '0000-00-00', 0, 0, 0, 0, 'new', 0, 0, 1);
+INSERT INTO `package` (`id`, `created_at`, `shiping_date`, `product_quantity`, `driver_id`, `destiny`, `status`, `storekeeper`, `customer`, `owner`) VALUES
+(24, '2015-08-21 21:42:56', '0000-00-00', 0, 0, 0, 'new', 0, 0, 0),
+(25, '2015-08-21 21:48:19', '0000-00-00', 0, 0, 0, 'new', 0, 0, 0),
+(26, '2015-08-22 00:38:58', '0000-00-00', 0, 0, 0, 'new', 0, 0, 0),
+(27, '2015-08-22 00:39:07', '0000-00-00', 0, 0, 0, 'new', 0, 0, 0),
+(28, '2015-08-22 00:40:01', '0000-00-00', 0, 0, 0, 'new', 0, 0, 0),
+(29, '2015-08-22 00:40:43', '0000-00-00', 0, 0, 0, 'new', 0, 0, 0),
+(30, '2015-08-24 14:25:21', '0000-00-00', 0, 0, 0, 'new', 0, 0, 0),
+(31, '2015-08-24 20:03:17', '0000-00-00', 0, 0, 0, 'new', 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -129,12 +131,16 @@ INSERT INTO `package` (`id`, `created_at`, `shiping_date`, `product_id`, `produc
 -- Table structure for table `package_item`
 --
 
+DROP TABLE package_item;
+
 CREATE TABLE IF NOT EXISTS `package_item` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `product_name` varchar(30) NOT NULL,
   `package_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL
+  `quantity` int(11) NOT NULL,
+  `quantity_filled` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=latin1;
 
 --

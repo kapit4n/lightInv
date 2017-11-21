@@ -2,12 +2,12 @@ from utils.queries import IQueryable
 import datetime
 from model.product import Product
 
-
 class PackageDelivery(IQueryable):
 
     def __init__(self, products=[], owner=0, customer=0, destiny=0, driver=0,
                  status='', id=0):
         self.created_at = datetime.datetime.now()
+        self.shiping_date = datetime.datetime.now()
         self.packageItems = []
         for product in products:
             self.packageItems.append(PackageItem(id, product.id, product.name,
@@ -23,14 +23,14 @@ class PackageDelivery(IQueryable):
             .format(self.created_at, self.destiny, self.driver)
 
     def fields(self):
-        return "created_at, owner, customer, destiny, driver_id, status "
+        return "created_at, owner, customer, destiny, driver_id, status, shiping_date "
 
     def values(self):
         if self.status == '':
             self.status = 'pending'
-        return "'{0}', '{1}', '{2}', '{3}', '{4}', '{5}'"\
+        return "'{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}'"\
             .format(self.created_at, self.owner, self.customer, self.destiny,
-                    self.driver, self.status)
+                    self.driver, self.status, self.shiping_date)
 
     def tableName(self):
         return "package"
@@ -54,13 +54,14 @@ class PackageDelivery(IQueryable):
         return "status= '{0}'".format(self.status)
 
     def setValues(self, cursor):
-        for (created_at, owner, customer, destiny, driver_id, status) in cursor:
+        for (created_at, owner, customer, destiny, driver_id, status, shiping_date) in cursor:
             self.created_at = created_at
             self.owner = owner
             self.customer = customer
             self.destiny = destiny
             self.driver = driver_id
             self.status = status
+            self.shiping_date = shiping_date
 
     def saveChilds(self, db):
         for item in self.packageItems:
