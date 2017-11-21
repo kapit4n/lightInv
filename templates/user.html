@@ -1,220 +1,208 @@
-{% import 'forms.html' as forms %}
-{% extends "layout.html" %}
-{% block title %}{{title}}{% endblock %}
-{% block head %}
-  {{ super() }}
-
-{% endblock %}
-{% block page %}{{title}}{% endblock %}
-{% block heading %}
-  {{ super() }}
+{% import 'forms.html' as forms %} {% extends "layout.html" %} {% block title %}{{title}}{% endblock %} {% block head %} {{ super() }} {% endblock %} {% block page %}{{title}}{% endblock %} {% block heading %} {{ super() }}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-{% endblock %}
-{% block content %}
-
 <script>
-
+.modal-backdrop {
+  background-color: red;
+}
+</script>
+{% endblock %} {% block content %}
+<script>
 function submitIt() {
-  $.post('/user', $('#target').serialize(), function(result){
-    $('#orderModal').modal('toggle');
-    $('.modal-backdrop').remove();
-    tr = $('#tr-userId-'+result.id)[0];
-    updateValue(tr, 'userName', result.display_name);
-    updateValue(tr, 'userEmail', result.email);
-    updateValue(tr, 'userLogin', result.login);
-    updateValue(tr, 'userPassword', result.password);
-    updateValue(tr, 'userType', result.user_type);
-    console.log(tdName);
-  });
+    $.post('/user', $('#target').serialize(), function(result) {
+        //$('#userEditModal').modal('show');
+        //$('.modal-backdrop').remove();
+        tr = $('#tr-userId-' + result.id)[0];
+        updateValue(tr, 'userName', result.display_name);
+        updateValue(tr, 'userEmail', result.email);
+        updateValue(tr, 'userLogin', result.login);
+        updateValue(tr, 'userPassword', result.password);
+        updateValue(tr, 'userType', result.user_type);
+        console.log(tdName);
+    });
 }
 
 function deleteIt() {
-  userId = $('#deleteUserId')[0].value;
-  $('#deleteModal').modal('toggle');
-  $('.modal-backdrop').remove();
+    userId = $('#deleteUserId')[0].value;
+    $('#deleteUserModal').modal('toggle');
+    $('.modal-backdrop').remove();
 
-  $.ajax({
-    url: '/user/' + userId,
-    type: 'DELETE',
-    success: function(result) {
-        console.log(result);
-    }
-  });
-  $('#tr-userId-' + userId).remove();
+    $.ajax({
+        url: '/user/' + userId,
+        type: 'DELETE',
+        success: function(result) {
+            console.log(result);
+        }
+    });
+    $('#tr-userId-' + userId).remove();
 }
 
 function updateValue(tr, className, value) {
-  tdName = $(tr).find('.' + className)[0];
-  $(tdName).text(value);
+    tdName = $(tr).find('.' + className)[0];
+    $(tdName).text(value);
 }
 
 function getVal(className, trs) {
-  tdValue = $(trs[0]).find('.' + className)[0];
-  return $(tdValue).text();
+    tdValue = $(trs[0]).find('.' + className)[0];
+    return $(tdValue).text();
 }
 
-String.prototype.format = function () {
-        var args = [].slice.call(arguments);
-        return this.replace(/(\{\d+\})/g, function (a){
-            return args[+(a.substr(1,a.length-2))||0];
-        });
+String.prototype.format = function() {
+    var args = [].slice.call(arguments);
+    return this.replace(/(\{\d+\})/g, function(a) {
+        return args[+(a.substr(1, a.length - 2)) || 0];
+    });
 };
 
-function getForm(contain){
-  return '<div class="container" ><form id="target" class="form-horizontal" role="form">'+ contain + '</form> </div>';
+function getForm(contain) {
+    return '<div class="container" ><form id="target" class="form-horizontal" role="form">' + contain + '</form> </div>';
 }
 
 function getFormInput(id, value, label, readonly) {
-  return '<div class="form-group">' +
-    '  <label style="color:white;" for="' + id + '" class="control-label col-sm-3">' + label + '</label>' +
-    '  <div class="col-sm-9">' +
-    '      <input class="form-control" type="text" value="' + value + '" name="' + id + '" id="' + id + '" ' + ( readonly? 'readonly="readonly"':'') +'>' +
-    '  </div>' +
-    '</div>';
+    return '<div class="form-group">' +
+        '  <label style="color:white;" for="' + id + '" class="control-label col-sm-3">' + label + '</label>' +
+        '  <div class="col-sm-9">' +
+        '      <input class="form-control" type="text" value="' + value + '" name="' + id + '" id="' + id + '" ' + (readonly ? 'readonly="readonly"' : '') + '>' +
+        '  </div>' +
+        '</div>';
 }
 
 function getFormInputs(inputs) {
-  res = ''
-  inputs.forEach( function(value) {
-    res += getFormInput(value.name, value.value, value.label, value.readonly);
-  });
-  return res;
+    res = ''
+    inputs.forEach(function(value) {
+        res += getFormInput(value.name, value.value, value.label, value.readonly);
+    });
+    return res;
 }
 
 function getSubmitInput() {
-  return '<div class="form-group"> '+
-  '  <div class="col-sm-offset-3 col-sm-9">'+
-  '    <button onclick="submitIt()" type="submit" class="btn btn-default">Update</button>'+
-  '  </div>'+
-  '</div>';
+    return '<div class="form-group"> ' +
+        '  <div class="col-sm-offset-3 col-sm-9">' +
+        '    <button onclick="submitIt()" type="submit" class="btn btn-default">Update</button>' +
+        '  </div>' +
+        '</div>';
 }
 
-$(document).ready(function(){
+$(document).ready(function() {
 
-$('#deleteModal').modal({
+    $('#deleteUserModal').modal({
         keyboard: true,
         backdrop: "static",
-        show:false,
-}).on('show.bs.modal', function() {
-  console.log('This is the modal');
-  trQuery = $($(event.target).closest('tr'));
-  userName = getVal('userName', trQuery);
-  userId = getVal('userId', trQuery);
+        show: false,
+    }).on('show.bs.modal', function() {
+        console.log('This is the modal');
+        trQuery = $($(event.target).closest('tr'));
+        userName = getVal('userName', trQuery);
+        userId = getVal('userId', trQuery);
 
-  $(this).find('#deleteDetails').html('<input type="hidden" id="deleteUserId" value="{0}"><h3 style="color: white;">Are you sure you want to delete the {1} User</h3>'.format(userId, userName));
-});
+        $(this).find('#deleteDetails').html('<input type="hidden" id="deleteUserId" value="{0}"><h3 style="color: white;">Are you sure you want to delete the {1} User</h3>'.format(userId, userName));
+    });
 
-$('#orderModal').modal({
+    $('#userEditModal').modal({
         keyboard: true,
         backdrop: "static",
-        show:false,
-}).on('show.bs.modal', function() {
-      var getIdFromRow = $(event.target).closest('tr').data('id');
-      trQuery = $($(event.target).closest('tr'));
-      userId = getVal('userId', trQuery);
-      userName = getVal('userName', trQuery);
-      userEmail = getVal('userEmail', trQuery);
-      userLogin = getVal('userLogin', trQuery);
-      userPassword = getVal('userPassword', trQuery);
-      userType = getVal('userType', trQuery);
+        show: false,
+    }).on('show.bs.modal', function() {
+        var getIdFromRow = $(event.target).closest('tr').data('id');
+        trQuery = $($(event.target).closest('tr'));
+        userId = getVal('userId', trQuery);
+        userName = getVal('userName', trQuery);
+        userEmail = getVal('userEmail', trQuery);
+        userLogin = getVal('userLogin', trQuery);
+        userPassword = getVal('userPassword', trQuery);
+        userType = getVal('userType', trQuery);
 
-      inputs = [{name: 'userId', label: 'Id', value: userId, type: 'input', readonly:true},
-                {name: 'display_name', label: 'Name', value: userName, type: 'input', readonly: false},
-                {name: 'email', label: 'Email', value: userEmail, type: 'input', readonly: false},
-                {name: 'login', label: 'Login', value: userLogin, type: 'input', readonly: false},
-                {name: 'password', label: 'Password', value: userPassword, type: 'input', readonly: false},
-                {name: 'user_type', label: 'Type', value: userType, type: 'input', readonly: false}]
+        inputs = [{ name: 'userId', label: 'Id', value: userId, type: 'input', readonly: true },
+            { name: 'display_name', label: 'Name', value: userName, type: 'input', readonly: false },
+            { name: 'email', label: 'Email', value: userEmail, type: 'input', readonly: false },
+            { name: 'login', label: 'Login', value: userLogin, type: 'input', readonly: false },
+            { name: 'password', label: 'Password', value: userPassword, type: 'input', readonly: false },
+            { name: 'user_type', label: 'Type', value: userType, type: 'input', readonly: false }
+        ]
 
-    $(this).find('#orderDetails').html($(getForm(getFormInputs(inputs))));
+        $(this).find('#orderDetails').html($(getForm(getFormInputs(inputs))));
 
-});
+    });
 
 });
 </script>
-
-<form action="{{url_for('user')}}" method="post" class="form-horizontal"  role="form" >
-  {{ forms.labelAndInput('Display Name', 'display_name') }}
-  {{ forms.labelAndInput('Email', 'email') }}
-  {{ forms.labelAndInput('Login', 'login') }}
-  {{ forms.labelAndInput('password', 'password', '', 'password') }}
-  {{ forms.label_select('Usert Type','user_type', 'customer', ['customer', 'driver', 'storekeeper']) }}
-  <div class="form-group"> 
-    <div class="col-sm-offset-3 col-sm-9">
-      <button type="submit" class="btn btn-default">Save</button>
+<form action="{{url_for('user')}}" method="post" class="form-horizontal" role="form">
+    {{ forms.labelAndInput('Display Name', 'display_name') }} {{ forms.labelAndInput('Email', 'email') }} {{ forms.labelAndInput('Login', 'login') }} {{ forms.labelAndInput('password', 'password', '', 'password') }} {{ forms.label_select('Usert Type','user_type', 'customer', ['customer', 'driver', 'storekeeper']) }}
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-default">Save</button>
+        </div>
     </div>
-  </div>
 </form>
-
 <div>
-  <table class="table table-striped">
-    <caption>User List</caption>
-    <thead>
-      <tr>
-        <th><input type="checkbox" id="checkall" /></th>
-        <th>Driver Id</th>
-        <th>Display name</th>
-        <th>Email</th>
-        <th>Login</th>
-        <th>Password</th>
-        <th>type</th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for user in users %}
-      <tr id="tr-userId-{{user.id}}" data-id="{{user.id}}" >
-        <td><input type="checkbox" class="checkthis" /></td>
-        <td class="userId">{{user.id}}</td>
-        <td class="userName">{{user.name}}</td>
-        <td class="userEmail">{{user.email}}</td>
-        <td class="userLogin">{{user.login}}</td>
-        <td class="userPassword">{{user.password}}</td>
-        <td class="userType">{{user.user_type}}</td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#orderModal" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#deleteModal" ><span class="glyphicon glyphicon-trash"></span></button></p></td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+    <table class="table table-striped">
+        <caption>User List</caption>
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="checkall" />
+                </th>
+                <th>Driver Id</th>
+                <th>Display name</th>
+                <th>Email</th>
+                <th>Login</th>
+                <th>Password</th>
+                <th>type</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr id="tr-userId-{{user.id}}" data-id="{{user.id}}">
+                <td>
+                    <input type="checkbox" class="checkthis" />
+                </td>
+                <td class="userId">{{user.id}}</td>
+                <td class="userName">{{user.name}}</td>
+                <td class="userEmail">{{user.email}}</td>
+                <td class="userLogin">{{user.login}}</td>
+                <td class="userPassword">{{user.password}}</td>
+                <td class="userType">{{user.user_type}}</td>
+                <td>
+                    <p data-placement="top" data-toggle="tooltip" title="Edit">
+                        <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#userEditModal"><span class="glyphicon glyphicon-pencil"></span></button>
+                    </p>
+                </td>
+                <td>
+                    <p data-placement="top" data-toggle="tooltip" title="Delete">
+                        <button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#deleteUserModal"><span class="glyphicon glyphicon-trash"></span></button>
+                    </p>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
-<div class="container">
-  <div id="orderModal" class="modal" role="dialog" class="container">
-    <div class="modal-header" >
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-      <h3>Order</h3>
-    </div>
-    <div id="orderDetails"class="modal-body" class="container">
-    </div>
-
-    <div id="orderItems" class="modal-body"></div>
-    <div class="modal-footer container">
-      <button class="btn" onclick="submitIt()" >Update</button>
-      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    </div>
-  </div>
-</div>
-
-<div>
-  <div id="deleteModal" class="modal" role="dialog" class="container">
+<div id="userEditModal" class="modal" role="dialog" class="container" style="background: black;">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-      <h3>Delete Modal</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3>Order</h3>
     </div>
-    <div id="deleteDetails"class="modal-body" class="container">
-
+    <div id="orderDetails" class="modal-body" class="container">
     </div>
-
-    <div id="orderItems" class="modal-body"></div>
     <div class="modal-footer container">
-      <button class="btn" onclick="deleteIt()" >Yes</button>
-      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn" onclick="submitIt()">Update</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
     </div>
-  </div>
 </div>
-
-  {% block footer %}
-  {{super()}}
-  {% endblock %}
-{% endblock %}
+<div class="container" style="background: black;">
+    <div id="deleteUserModal" class="modal" role="dialog" class="container">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3>Delete Modal</h3>
+        </div>
+        <div id="deleteDetails" class="modal-body" class="container">
+        </div>
+        <div class="modal-footer container">
+            <button class="btn" onclick="deleteIt()">Yes</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        </div>
+    </div>
+</div>
+{% block footer %} {{super()}} {% endblock %} {% endblock %}
