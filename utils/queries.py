@@ -15,6 +15,7 @@ class DBManager:
         return self.cursor.lastrowid
 
     def executeUpdate(self, query):
+        print query
         self.cursor.execute(query)
         self.conn.commit()
         return self.cursor.lastrowid

@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `package` (
   `product_quantity` int(11) NOT NULL DEFAULT 0,
   `driver_id` int(11) NOT NULL,
   `destiny` int(11) NOT NULL,
-  `status` enum('new','shipping','dispatched','verified','closed','pending') NOT NULL DEFAULT 'new',
+  `status` enum('new','shipping','dispatched','verified','closed','pending','packaging') NOT NULL DEFAULT 'new',
   `storekeeper` int(11) NOT NULL DEFAULT 0,
   `customer` int(11) NOT NULL DEFAULT 0,
   `owner` int(11) NOT NULL DEFAULT 0,
