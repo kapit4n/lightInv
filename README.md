@@ -14,7 +14,7 @@ Light wait to handle a store.
 * create coke db
 * install coke.sql to coke db
 * python run.py
-* go to [localhost/login](http://localhost/login)
+* go to [localhost:5000/login](http://localhost:5000/login)
 * user: luis password: password
 
 ### Who do I talk to? ###
